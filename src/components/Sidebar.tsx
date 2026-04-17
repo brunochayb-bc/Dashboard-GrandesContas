@@ -46,10 +46,20 @@ export function Sidebar({
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-[#0a0f1d] backdrop-blur-[12px] border-r border-glass-border text-white select-none">
       <div className="p-8 pb-4">
-        <h1 className="text-xl font-black tracking-tighter text-accent leading-tight uppercase">
-          Dashboard Grandes Contas<br/>
-          <span className="text-yellow-400 text-[10px] tracking-widest font-black uppercase">Negociações em andamento</span>
-        </h1>
+        <button 
+          onClick={() => {
+            setView('dashboard');
+            setSelectedClient('all');
+            setActiveFilter('area-all');
+            setIsMobileOpen(false);
+          }}
+          className="text-left group transition-all"
+        >
+          <h1 className="text-xl font-black tracking-tighter text-accent leading-tight uppercase group-hover:text-white transition-colors">
+            Dashboard Grandes Contas<br/>
+            <span className="text-yellow-400 text-[10px] tracking-widest font-black uppercase">Negociações em andamento</span>
+          </h1>
+        </button>
       </div>
 
       <nav className="flex-1 overflow-y-auto py-6">
