@@ -47,8 +47,8 @@ export function Sidebar({
     <div className="flex flex-col h-full bg-[#0a0f1d] backdrop-blur-[12px] border-r border-glass-border text-white select-none">
       <div className="p-8 pb-4">
         <h1 className="text-xl font-black tracking-tighter text-accent leading-tight uppercase">
-          Dashboard Vendas<br/>
-          <span className="text-white text-sm tracking-widest font-light opacity-80">- Grandes Contas -</span>
+          Dashboard Grandes Contas<br/>
+          <span className="text-white text-[10px] tracking-widest font-light opacity-80">- Negociações em andamento -</span>
         </h1>
       </div>
 

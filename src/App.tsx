@@ -141,10 +141,15 @@ export default function App() {
   }, [filteredNegotiations]);
 
   const login = async () => {
+    console.log("Iniciando login...");
     try {
-      await signInWithPopup(auth, new GoogleAuthProvider());
-    } catch (error) {
-      console.error("Login Error:", error);
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      const result = await signInWithPopup(auth, provider);
+      console.log("Login bem-sucedido:", result.user.email);
+    } catch (error: any) {
+      console.error("Erro detalhado no Login:", error);
+      alert(`Erro ao tentar login: ${error.message || 'Erro desconhecido'}`);
     }
   };
 
@@ -173,8 +178,8 @@ export default function App() {
               <Briefcase className="w-10 h-10" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold italic tracking-tighter mb-4">Negociador Pro</h1>
-          <p className="text-gray-400 font-mono tracking-widest text-xs uppercase mb-12 opacity-60">Plataforma de Gestão de Ciclo de Vendas</p>
+          <h1 className="text-4xl font-bold italic tracking-tighter mb-4">Dashboard Grandes Contas</h1>
+          <p className="text-gray-400 font-mono tracking-widest text-xs uppercase mb-12 opacity-60">Negociações em andamento</p>
           <button 
             onClick={login}
             className="flex items-center gap-3 bg-white text-black px-10 py-4 rounded-xl font-bold hover:scale-105 transition-all shadow-xl shadow-white/10 group"
