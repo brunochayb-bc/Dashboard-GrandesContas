@@ -75,13 +75,11 @@ service cloud.firestore {
     // ===============================================================
 
     match /negotiations/{negotiationId} {
-      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid);
-      allow create: if isAuthenticated() && isValidNegotiation(request.resource.data);
-      allow update: if isAuthenticated() && isDocOwner() &&
-                       isValidNegotiation(request.resource.data) &&
-                       uidNotModified() &&
-                       request.resource.data.createdAt == resource.data.createdAt;
-      allow delete: if isAuthenticated() && isDocOwner();
+      // PERMISSION: Public access as requested to bypass login issues
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
     }
 
     match /users/{userId} {

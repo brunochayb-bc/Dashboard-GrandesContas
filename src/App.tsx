@@ -65,14 +65,12 @@ export default function App() {
 
   // 3. Firestore Listener
   useEffect(() => {
-    if (!user || !isAuthReady) {
-      setNegotiations([]);
+    if (!isAuthReady) {
       return;
     }
 
     const q = query(
       collection(db, 'negotiations'),
-      where('userId', '==', user.uid),
       orderBy('createdAt', 'desc')
     );
 
@@ -155,7 +153,7 @@ export default function App() {
 
   if (!isAuthReady) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-gray-50">
+      <div className="h-screen w-screen flex items-center justify-center bg-[#0f172a]">
         <motion.div 
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
@@ -165,6 +163,8 @@ export default function App() {
     );
   }
 
+  // Comentado para permitir acesso público como solicitado
+  /*
   if (!user) {
     return (
       <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#141414] text-white p-6 select-none">
@@ -191,6 +191,7 @@ export default function App() {
       </div>
     );
   }
+  */
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white flex">
@@ -282,7 +283,11 @@ export default function App() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                 <button onClick={() => signOut(auth)} className="text-[0.65rem] font-black uppercase tracking-widest bg-red-500/10 text-red-400 px-6 py-2.5 rounded-xl border border-red-500/20 hover:bg-red-500/20 transition-all shadow-lg shadow-red-500/5">Sair</button>
+                 {user ? (
+                   <button onClick={() => signOut(auth)} className="text-[0.65rem] font-black uppercase tracking-widest bg-red-500/10 text-red-400 px-6 py-2.5 rounded-xl border border-red-500/20 hover:bg-red-500/20 transition-all shadow-lg shadow-red-500/5">Sair</button>
+                 ) : (
+                   <button onClick={login} className="text-[0.65rem] font-black uppercase tracking-widest bg-accent/10 text-accent px-6 py-2.5 rounded-xl border border-accent/20 hover:bg-accent/20 transition-all shadow-lg shadow-accent/5">Entrar</button>
+                 )}
               </div>
             </div>
           </header>

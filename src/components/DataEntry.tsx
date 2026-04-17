@@ -50,13 +50,12 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!auth.currentUser) return;
     setLoading(true);
 
     try {
       const data = {
         ...formData,
-        userId: auth.currentUser.uid,
+        userId: auth.currentUser?.uid || 'anonymous',
         createdAt: serverTimestamp(),
       };
 
