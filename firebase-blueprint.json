@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "Negotiation": {
+      "title": "Negotiation",
+      "description": "Represents a business negotiation in the dashboard.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "client": { "type": "string", "description": "The name of the client." },
+        "area": { "type": "string", "description": "The business area (e.g., Sales, Marketing)." },
+        "product": { "type": "string", "description": "The product being negotiated." },
+        "closeDate": { "type": "string", "format": "date", "description": "Expected closing date (YYYY-MM-DD)." },
+        "value": { "type": "number", "description": "The expected value of the negotiation." },
+        "observations": { "type": "string", "description": "Additional notes about the negotiation." },
+        "userId": { "type": "string", "description": "ID of the user who owns this record." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["client", "area", "product", "closeDate", "value", "userId"]
+    }
+  },
+  "firestore": {
+    "/negotiations/{negotiationId}": {
+      "schema": "Negotiation",
+      "description": "Collection of business negotiations."
+    }
+  }
+}

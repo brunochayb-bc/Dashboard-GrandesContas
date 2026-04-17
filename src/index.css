@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-glass-bg: rgba(255, 255, 255, 0.12);
+  --color-glass-border: rgba(255, 255, 255, 0.2);
+  --color-accent: #60a5fa;
+  --color-text-secondary: rgba(255, 255, 255, 0.7);
+  --background-image-glass-gradient: radial-gradient(circle at top left, #1e293b, #0f172a, #334155);
+}
+
+@layer base {
+  body {
+    @apply bg-[#0f172a] text-white font-sans antialiased;
+    background-image: var(--background-image-glass-gradient);
+    background-attachment: fixed;
+  }
+}
+
+.glass-effect {
+  @apply bg-glass-bg backdrop-blur-[10px] border border-glass-border;
+}
+
+.glass-card {
+  @apply bg-glass-bg backdrop-blur-[10px] border border-glass-border rounded-2xl shadow-xl;
+}
+
+.glass-header {
+  @apply bg-glass-bg backdrop-blur-[15px] border border-glass-border rounded-2xl;
+}
+
+.glass-nav {
+  @apply bg-black/20 backdrop-blur-[10px] border-r border-glass-border;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-white/20;
+}

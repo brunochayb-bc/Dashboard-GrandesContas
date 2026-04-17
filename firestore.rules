@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: negotiations
+    // Document ID: {negotiationId} (Auto-generated)
+    // Fields:
+    //   - client: string (required, max 100 chars)
+    //   - area: string (required, max 50 chars)
+    //   - product: string (required, max 50 chars)
+    //   - closeDate: string (required, ISO 8601 YYYY-MM-DD or similar) - date of closing
+    //   - value: number (required, positive) - expected value
+    //   - observations: string (optional, max 1000 chars) - additional notes
+    //   - userId: string (required, immutable) - owner of the negotiation
+    //   - createdAt: timestamp (required, immutable)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+       return request.auth != null;
+    }
+
+    function isOwner(userId) {
+       return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+       return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+
+    function uidUnchanged() {
+       return !('userId' in request.resource.data) ||
+         request.resource.data.userId == request.auth.uid;
+    }
+
+    function uidNotModified() {
+       return !('userId' in request.resource.data) ||
+         request.resource.data.userId == resource.data.userId;
+    }
+
+    function hasRequiredFields(fields) {
+       return request.resource.data.keys().hasAll(fields);
+    }
+
+    function isValidEmail(email) {
+       return email is string &&
+         email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidNegotiation(data) {
+      return data.client is string && data.client.size() > 0 && data.client.size() <= 100 &&
+             data.area is string && data.area.size() > 0 && data.area.size() <= 50 &&
+             data.product is string && data.product.size() > 0 && data.product.size() <= 50 &&
+             data.closeDate is string && data.closeDate.size() >= 10 &&
+             data.value is number && data.value >= 0 &&
+             (!('observations' in data) || (data.observations is string && data.observations.size() <= 1000)) &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.createdAt is timestamp;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /negotiations/{negotiationId} {
+      allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated() && isValidNegotiation(request.resource.data);
+      allow update: if isAuthenticated() && isDocOwner() &&
+                       isValidNegotiation(request.resource.data) &&
+                       uidNotModified() &&
+                       request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+  }
+}
