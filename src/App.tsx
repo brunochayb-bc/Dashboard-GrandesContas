@@ -21,7 +21,7 @@ import { Sidebar } from './components/Sidebar';
 import { NegotiationCard } from './components/NegotiationCard';
 import { DataEntry } from './components/DataEntry';
 import { DashboardCharts } from './components/DashboardCharts';
-import { TrendingUp, LogIn, Filter, Bell, Search, Menu as MenuIcon, Briefcase } from 'lucide-react';
+import { TrendingUp, LogIn, Filter, Bell, Search, Menu as MenuIcon, Briefcase, BarChart3, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 import { getBrandColor } from './lib/brand-colors';
@@ -36,6 +36,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClient, setSelectedClient] = useState('all');
   const [selectedProductFilter, setSelectedProductFilter] = useState('all');
+  const [isChartsOpen, setIsChartsOpen] = useState(false);
 
   const editRef = useRef<((neg: Negotiation) => void) | null>(null);
 
@@ -209,7 +210,7 @@ export default function App() {
         setIsMobileOpen={setIsMobileMenuOpen}
       />
 
-      <main className="flex-1 lg:ml-64 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 lg:ml-64 flex flex-col h-screen overflow-hidden relative">
         {/* Superior Header */}
         <div className="p-4 lg:px-10 lg:pt-10 pb-0 shrink-0">
           <header className="glass-header glass-effect py-4 px-6 lg:px-8 flex flex-col lg:flex-row lg:items-center justify-between sticky top-0 z-20 shrink-0 select-none gap-4">
@@ -272,7 +273,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between lg:justify-end w-full lg:w-auto gap-8 pt-4 lg:pt-0 border-t lg:border-t-0 border-glass-border lg:border-l lg:pl-10">
+            <div className="flex items-center justify-between lg:justify-end w-full lg:w-auto gap-4 pt-4 lg:pt-0 border-t lg:border-t-0 border-glass-border lg:border-l lg:pl-10">
               <div className="flex flex-col items-end">
                 <span className="text-[0.6rem] font-bold tracking-[0.2em] text-[#4ade80] uppercase leading-none mb-2 opacity-50">Soma Total Prevista</span>
                 <div className="flex items-center gap-3 text-[#4ade80]">
@@ -282,7 +283,23 @@ export default function App() {
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              
+              <div className="flex items-center gap-2">
+                 <button 
+                  onClick={() => setIsChartsOpen(!isChartsOpen)}
+                  className={`p-2.5 rounded-xl border transition-all flex items-center gap-2 ${
+                    isChartsOpen 
+                      ? 'bg-accent/20 border-accent/50 text-white shadow-lg shadow-accent/20' 
+                      : 'bg-white/5 border-glass-border text-text-secondary hover:text-white'
+                  }`}
+                  title="Ver Gráficos"
+                 >
+                   <BarChart3 className="w-4 h-4" />
+                   <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Analytics</span>
+                 </button>
+
+                 <div className="w-px h-8 bg-glass-border mx-2 hidden sm:block opacity-30" />
+
                  {user ? (
                    <button onClick={() => signOut(auth)} className="text-[0.65rem] font-black uppercase tracking-widest bg-red-500/10 text-red-400 px-6 py-2.5 rounded-xl border border-red-500/20 hover:bg-red-500/20 transition-all shadow-lg shadow-red-500/5">Sair</button>
                  ) : (
@@ -339,7 +356,18 @@ export default function App() {
                   </div>
                 </div>
 
-                <DashboardCharts negotiations={filteredNegotiations} />
+                <AnimatePresence>
+                  {isChartsOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <DashboardCharts negotiations={filteredNegotiations} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {filteredNegotiations.length === 0 ? (
                   <div className="text-center py-32 opacity-30 select-none">
@@ -389,7 +417,7 @@ export default function App() {
             )}
           </AnimatePresence>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
