@@ -41,39 +41,40 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
       {/* Institutional Brand Strip */}
       <div className={`h-1 w-full ${getBrandStripClass(negotiation.client)} shadow-sm group-hover:h-1.5 transition-all duration-300`} />
 
-      <div className="p-4 flex-1">
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <div className="text-base font-bold text-white mb-0.5 group-hover:text-accent transition-colors truncate max-w-[150px]">
+      <div className="p-4 flex-1 text-left">
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex-1 overflow-hidden">
+            {/* 1. Client */}
+            <p className="text-[0.65rem] text-text-secondary uppercase tracking-widest font-bold mb-1 truncate">
+              {negotiation.client}
+            </p>
+            
+            {/* 2. Product */}
+            <div 
+              className="text-base font-black text-white mb-2 group-hover:text-accent transition-colors truncate"
+              style={brandColor ? { color: brandColor } : {}}
+            >
               {negotiation.product}
             </div>
-            <span className="inline-block px-1.5 py-0 bg-white/10 text-accent text-[0.6rem] font-bold uppercase tracking-wider rounded border border-glass-border">
+
+            {/* 3. Area Label */}
+            <span className="inline-block px-1.5 py-0.5 bg-white/5 text-text-secondary text-[0.55rem] font-bold uppercase tracking-widest rounded border border-glass-border">
               {negotiation.area}
             </span>
           </div>
+          
           <button 
             onClick={(e) => {
               e.stopPropagation();
               onEdit?.(negotiation);
             }}
-            className="text-text-secondary hover:text-white p-1"
+            className="text-text-secondary hover:text-white p-1 ml-2"
           >
             <MoreHorizontal className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="space-y-1 mb-4">
-          <p className="text-[0.7rem] text-text-secondary truncate">
-            Cliente:{' '}
-            <span 
-              className={`font-bold transition-all ${isActiveClient ? 'text-sm' : 'text-[0.7rem]'}`}
-              style={brandColor ? { color: brandColor } : { color: 'white' }}
-            >
-              {negotiation.client}
-            </span>
-          </p>
-        </div>
-
+        {/* Existing Grid with Date and Value */}
         <div className="grid grid-cols-2 gap-2 pt-3 border-t border-glass-border">
           <div className="flex flex-col">
             <span className="text-[0.55rem] text-text-secondary uppercase leading-tight">Previsão</span>

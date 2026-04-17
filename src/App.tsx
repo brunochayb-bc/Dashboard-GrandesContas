@@ -287,7 +287,7 @@ export default function App() {
 
             <div className="flex items-center justify-between lg:justify-end w-full lg:w-auto gap-4 pt-4 lg:pt-0 border-t lg:border-t-0 border-glass-border lg:border-l lg:pl-10">
               <div className="flex flex-col items-end">
-                <span className="text-[0.6rem] font-bold tracking-[0.2em] text-[#4ade80] uppercase leading-none mb-2 opacity-50">Soma Total Prevista</span>
+                <span className="text-[0.6rem] font-bold tracking-[0.2em] text-[#4ade80] uppercase leading-none mb-2 opacity-50">Incremento Mensal Previsto</span>
                 <div className="flex items-center gap-3 text-[#4ade80]">
                   <TrendingUp className="w-5 h-5 hidden sm:block opacity-40" />
                   <span className="text-xl lg:text-2xl font-black tracking-tighter leading-none text-white drop-shadow-lg">
