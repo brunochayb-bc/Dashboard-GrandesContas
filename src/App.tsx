@@ -189,7 +189,7 @@ export default function App() {
               <Briefcase className="w-10 h-10" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold italic tracking-tighter mb-4 text-white">Dashboard Grandes Contas</h1>
+          <h1 className="text-4xl font-black tracking-tighter mb-4 text-white uppercase">Dashboard Grandes Contas</h1>
           <p className="font-mono tracking-widest text-xs uppercase mb-12">
             <span className="text-yellow-400 font-black">Negociações em andamento</span>
           </p>
@@ -337,7 +337,7 @@ export default function App() {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                       <h2 className="text-2xl font-black tracking-tight text-white italic">Visão Geral</h2>
+                       <h2 className="text-lg font-black tracking-widest text-white uppercase">Visão Geral</h2>
                        {selectedClient !== 'all' && (
                          <div className="flex items-center gap-2">
                             <span className="text-text-secondary opacity-30 text-xl font-thin mx-2">/</span>

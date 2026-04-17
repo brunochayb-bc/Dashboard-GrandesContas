@@ -149,8 +149,8 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
     <div className="max-w-6xl mx-auto p-4 lg:p-10 select-none">
       <div className="flex justify-between items-center mb-10">
         <div>
-          <h2 className="text-3xl font-bold tracking-tighter text-white italic">Gestão</h2>
-          <p className="text-[0.7rem] text-text-secondary font-semibold tracking-widest uppercase mt-1">Lançamentos & Registros</p>
+          <h2 className="text-lg font-black tracking-widest text-white uppercase leading-none">Gestão</h2>
+          <p className="text-[0.6rem] text-text-secondary font-semibold tracking-widest uppercase mt-2">Lançamentos & Registros</p>
         </div>
         <div className="flex gap-4">
           <button
@@ -177,7 +177,7 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
           className="glass-card mb-12 overflow-hidden"
         >
           <div className="p-4 bg-white/5 border-b border-glass-border flex justify-between items-center select-none">
-            <h3 className="text-[0.7rem] uppercase tracking-widest font-bold text-accent italic">
+            <h3 className="text-[0.7rem] uppercase tracking-widest font-black text-accent">
               {editingId ? 'Editar Registro' : 'Lançar Novo Registro'}
             </h3>
             <button onClick={resetForm} className="text-text-secondary hover:text-white transition-opacity">

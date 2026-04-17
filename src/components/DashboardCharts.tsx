@@ -160,7 +160,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ negotiations }
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               Cronograma de Receita Prevista
             </h3>
-            <p className="text-lg font-bold text-white italic">Previsão Mensal (2026)</p>
+            <p className="text-lg font-black text-white uppercase tracking-tight">Previsão Mensal (2026)</p>
           </div>
           <div className="bg-white/5 px-4 py-2 rounded-xl border border-glass-border">
              <span className="text-[0.6rem] font-bold tracking-widest text-text-secondary uppercase">Ano de Referência: 2026</span>
