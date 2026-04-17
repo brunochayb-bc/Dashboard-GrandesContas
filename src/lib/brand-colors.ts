@@ -4,6 +4,7 @@ export const getBrandColor = (client: string) => {
   if (name.includes('santander')) return '#ec0000';
   if (name.includes('bradesco')) return '#cc092f';
   if (name.includes('banco do brasil')) return '#f8d117';
+  if (name.includes('cef') || name.includes('caixa')) return '#38bdf8';
   return null;
 };
 
@@ -13,5 +14,6 @@ export const getBrandStripClass = (client: string) => {
   if (name.includes('santander')) return 'bg-[#ec0000]';
   if (name.includes('bradesco')) return 'bg-gradient-to-r from-[#cc092f] via-[#cc092f] to-white';
   if (name.includes('banco do brasil')) return 'bg-[#f8d117]';
+  if (name.includes('cef') || name.includes('caixa')) return 'bg-[#38bdf8]';
   return 'bg-glass-border/30';
 };

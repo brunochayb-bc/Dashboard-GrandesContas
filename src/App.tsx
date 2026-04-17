@@ -72,7 +72,7 @@ export default function App() {
 
     const q = query(
       collection(db, 'negotiations'),
-      orderBy('createdAt', 'desc')
+      orderBy('closeDate', 'asc')
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -138,6 +138,16 @@ export default function App() {
   const totalRevenue = useMemo(() => {
     return filteredNegotiations.reduce((sum, n) => sum + n.value, 0);
   }, [filteredNegotiations]);
+
+  const lastUpdated = useMemo(() => {
+    if (negotiations.length === 0) return null;
+    const timestamps = negotiations
+      .map(n => n.createdAt?.toDate?.() || new Date(0))
+      .filter(d => d.getTime() > 0);
+    
+    if (timestamps.length === 0) return null;
+    return new Date(Math.max(...timestamps.map(t => t.getTime())));
+  }, [negotiations]);
 
   const login = async () => {
     console.log("Iniciando login...");
@@ -342,11 +352,23 @@ export default function App() {
                          </div>
                        )}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div className="status-dot"></div>
-                      <p className="text-[0.7rem] text-text-secondary font-semibold tracking-widest uppercase">
-                        {filteredNegotiations.length} {filteredNegotiations.length === 1 ? 'REGISTRO ATIVO' : 'REGISTROS ATIVOS'}
-                      </p>
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <div className="status-dot"></div>
+                        <p className="text-[0.7rem] text-text-secondary font-semibold tracking-widest uppercase">
+                          {filteredNegotiations.length} {filteredNegotiations.length === 1 ? 'REGISTRO ATIVO' : 'REGISTROS ATIVOS'}
+                        </p>
+                      </div>
+                      
+                      {lastUpdated && (
+                        <div className="flex items-center gap-2 border-l border-glass-border pl-4">
+                          <p className="text-[0.6rem] text-text-secondary font-medium tracking-wider uppercase opacity-60">
+                            Última atualização: <span className="text-white opacity-100">
+                              {lastUpdated.toLocaleDateString('pt-BR')} {lastUpdated.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
 

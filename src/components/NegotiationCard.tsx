@@ -26,15 +26,20 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
       layout
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4 }}
-      className={`glass-card flex flex-col transition-all group overflow-hidden ${isActiveClient ? 'border-opacity-100' : ''}`}
+      whileHover={{ 
+        y: -6, 
+        scale: 1.01,
+        transition: { duration: 0.2, ease: "easeOut" }
+      }}
+      className={`glass-card flex flex-col transition-all group overflow-hidden cursor-pointer ${isActiveClient ? 'border-opacity-100' : 'hover:border-accent/30'}`}
       style={{ 
         borderColor: isActiveClient && brandColor ? brandColor : undefined,
-        boxShadow: isActiveClient && brandColor ? `0 0 25px ${brandColor}40` : undefined
+        boxShadow: isActiveClient && brandColor ? `0 0 25px ${brandColor}40` : undefined,
+        backgroundColor: isActiveClient ? 'rgba(255,255,255,0.03)' : undefined
       }}
     >
       {/* Institutional Brand Strip */}
-      <div className={`h-1 w-full ${getBrandStripClass(negotiation.client)} shadow-sm`} />
+      <div className={`h-1 w-full ${getBrandStripClass(negotiation.client)} shadow-sm group-hover:h-1.5 transition-all duration-300`} />
 
       <div className="p-4 flex-1">
         <div className="flex justify-between items-start mb-2">
