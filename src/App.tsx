@@ -179,8 +179,10 @@ export default function App() {
               <Briefcase className="w-10 h-10" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold italic tracking-tighter mb-4">Dashboard Grandes Contas</h1>
-          <p className="text-gray-400 font-mono tracking-widest text-xs uppercase mb-12 opacity-60">Negociações em andamento</p>
+          <h1 className="text-4xl font-bold italic tracking-tighter mb-4 text-white">Dashboard Grandes Contas</h1>
+          <p className="font-mono tracking-widest text-xs uppercase mb-12">
+            <span className="text-yellow-400 font-black">Negociações em andamento</span>
+          </p>
           <button 
             onClick={login}
             className="flex items-center gap-3 bg-white text-black px-10 py-4 rounded-xl font-bold hover:scale-105 transition-all shadow-xl shadow-white/10 group"
@@ -381,7 +383,7 @@ export default function App() {
                     </button>
                   </div>
                 ) : (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-4">
       {filteredNegotiations.map((neg) => (
         <NegotiationCard 
           key={neg.id || Math.random().toString()} 

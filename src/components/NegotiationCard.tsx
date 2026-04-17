@@ -34,15 +34,15 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
       }}
     >
       {/* Institutional Brand Strip */}
-      <div className={`h-1.5 w-full ${getBrandStripClass(negotiation.client)} shadow-sm`} />
+      <div className={`h-1 w-full ${getBrandStripClass(negotiation.client)} shadow-sm`} />
 
-      <div className="p-6 flex-1">
-        <div className="flex justify-between items-start mb-4">
+      <div className="p-4 flex-1">
+        <div className="flex justify-between items-start mb-2">
           <div>
-            <div className="text-xl font-bold text-white mb-1 group-hover:text-accent transition-colors">
+            <div className="text-base font-bold text-white mb-0.5 group-hover:text-accent transition-colors truncate max-w-[150px]">
               {negotiation.product}
             </div>
-            <span className="inline-block px-2 py-0.5 bg-white/10 text-accent text-[0.7rem] font-bold uppercase tracking-wider rounded border border-glass-border">
+            <span className="inline-block px-1.5 py-0 bg-white/10 text-accent text-[0.6rem] font-bold uppercase tracking-wider rounded border border-glass-border">
               {negotiation.area}
             </span>
           </div>
@@ -51,17 +51,17 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
               e.stopPropagation();
               onEdit?.(negotiation);
             }}
-            className="text-text-secondary hover:text-white"
+            className="text-text-secondary hover:text-white p-1"
           >
-            <MoreHorizontal className="w-5 h-5" />
+            <MoreHorizontal className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="space-y-3 mb-6">
-          <p className="text-sm text-text-secondary">
+        <div className="space-y-1 mb-4">
+          <p className="text-[0.7rem] text-text-secondary truncate">
             Cliente:{' '}
             <span 
-              className={`font-bold transition-all ${isActiveClient ? 'text-base' : 'text-sm'}`}
+              className={`font-bold transition-all ${isActiveClient ? 'text-sm' : 'text-[0.7rem]'}`}
               style={brandColor ? { color: brandColor } : { color: 'white' }}
             >
               {negotiation.client}
@@ -69,25 +69,25 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-glass-border">
+        <div className="grid grid-cols-2 gap-2 pt-3 border-t border-glass-border">
           <div className="flex flex-col">
-            <span className="text-[0.7rem] text-text-secondary uppercase">Previsão de Fechamento</span>
-            <span className="text-sm font-semibold">{formattedDate}</span>
+            <span className="text-[0.55rem] text-text-secondary uppercase leading-tight">Previsão</span>
+            <span className="text-xs font-semibold">{formattedDate}</span>
           </div>
-          <div className="flex flex-col">
-            <span className="text-[0.7rem] text-text-secondary uppercase">Previsto</span>
-            <span className="text-sm font-bold text-[#4ade80]">{formattedValue}</span>
+          <div className="flex flex-col items-end">
+            <span className="text-[0.55rem] text-text-secondary uppercase leading-tight">Valor</span>
+            <span className="text-xs font-bold text-[#4ade80]">{formattedValue}</span>
           </div>
         </div>
       </div>
 
-      <div className="px-6 pb-6 mt-auto">
+      <div className="px-4 pb-4 mt-auto">
         <button
           onClick={() => setShowDetails(!showDetails)}
-          className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-semibold text-white border border-glass-border rounded-xl hover:bg-white/5 transition-all"
+          className="w-full flex items-center justify-center gap-1.5 py-1.5 text-[0.65rem] font-semibold text-white border border-glass-border rounded-lg hover:bg-white/5 transition-all"
         >
-          <Info className="w-4 h-4" />
-          {showDetails ? 'Ocultar Detalhes' : 'Ver Detalhes'}
+          <Info className="w-3 h-3" />
+          {showDetails ? 'Ocultar' : 'Detalhes'}
         </button>
       </div>
 
@@ -95,10 +95,10 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
         <motion.div
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: 'auto', opacity: 1 }}
-          className="px-6 pb-6 bg-black/10 border-t border-glass-border"
+          className="px-4 pb-4 bg-black/10 border-t border-glass-border"
         >
-          <p className="text-xs text-text-secondary leading-relaxed pt-4 italic">
-            {negotiation.observations || 'Nenhuma observação informada.'}
+          <p className="text-[0.65rem] text-text-secondary leading-tight pt-3 italic">
+            {negotiation.observations || 'Sem observações.'}
           </p>
         </motion.div>
       )}

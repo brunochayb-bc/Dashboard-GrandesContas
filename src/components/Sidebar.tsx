@@ -48,7 +48,7 @@ export function Sidebar({
       <div className="p-8 pb-4">
         <h1 className="text-xl font-black tracking-tighter text-accent leading-tight uppercase">
           Dashboard Grandes Contas<br/>
-          <span className="text-white text-[10px] tracking-widest font-light opacity-80">- Negociações em andamento -</span>
+          <span className="text-yellow-400 text-[10px] tracking-widest font-black uppercase">Negociações em andamento</span>
         </h1>
       </div>
 
