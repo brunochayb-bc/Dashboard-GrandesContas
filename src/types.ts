@@ -10,5 +10,5 @@ export interface Negotiation {
   createdAt: any;
 }
 
-export type ViewType = 'dashboard' | 'data-entry';
-export type FilterType = 'all' | 'area' | 'product';
+export type ViewType = 'dashboard' | 'grouped-by-client' | 'data-entry';
+export type FilterType = 'all' | 'area' | 'product' | 'grouped';

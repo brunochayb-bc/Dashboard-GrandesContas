@@ -19,6 +19,7 @@ import { db, auth, handleFirestoreError, OperationType } from './lib/firebase';
 import { Negotiation, ViewType } from './types';
 import { Sidebar } from './components/Sidebar';
 import { NegotiationCard } from './components/NegotiationCard';
+import { GroupedClientCard } from './components/GroupedClientCard';
 import { DataEntry } from './components/DataEntry';
 import { DashboardCharts } from './components/DashboardCharts';
 import { TrendingUp, LogIn, Filter, Bell, Search, Menu as MenuIcon, Briefcase, BarChart3, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -137,6 +138,24 @@ export default function App() {
   // Calculations reflect filters
   const totalRevenue = useMemo(() => {
     return filteredNegotiations.reduce((sum, n) => sum + n.value, 0);
+  }, [filteredNegotiations]);
+
+  const groupedByClient = useMemo(() => {
+    const groups: Record<string, { client: string, products: Set<string>, totalValue: number }> = {};
+    
+    filteredNegotiations.forEach(neg => {
+      if (!groups[neg.client]) {
+        groups[neg.client] = {
+          client: neg.client,
+          products: new Set(),
+          totalValue: 0
+        };
+      }
+      groups[neg.client].products.add(neg.product);
+      groups[neg.client].totalValue += neg.value;
+    });
+    
+    return Object.values(groups).sort((a, b) => b.totalValue - a.totalValue);
   }, [filteredNegotiations]);
 
   const lastUpdated = useMemo(() => {
@@ -424,6 +443,34 @@ export default function App() {
       ))}
     </div>
                 )}
+              </motion.div>
+            ) : view === 'grouped-by-client' ? (
+              <motion.div
+                key="grouped"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="p-4 lg:p-10"
+              >
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
+                  <div className="flex-1">
+                    <h2 className="text-lg font-black tracking-widest text-white uppercase mb-2">Agrupamento por Cliente</h2>
+                    <p className="text-[0.7rem] text-text-secondary font-semibold tracking-widest uppercase">
+                      {groupedByClient.length} {groupedByClient.length === 1 ? 'GRUPO IDENTIFICADO' : 'GRUPOS IDENTIFICADOS'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-6">
+                  {groupedByClient.map((group, idx) => (
+                    <GroupedClientCard 
+                      key={idx}
+                      client={group.client}
+                      products={Array.from(group.products)}
+                      totalValue={group.totalValue}
+                    />
+                  ))}
+                </div>
               </motion.div>
             ) : (
               <motion.div

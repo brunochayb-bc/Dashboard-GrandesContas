@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { LayoutDashboard, TableProperties, Briefcase, Package, ChevronRight, Menu, X, Plus, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, TableProperties, Briefcase, Package, ChevronRight, Menu, X, Plus, ChevronDown, User } from 'lucide-react';
 import { ViewType } from '../types';
 
 interface SidebarProps {
@@ -245,6 +245,29 @@ export function Sidebar({
                 </motion.div>
               )}
             </AnimatePresence>
+          </div>
+        </div>
+
+        <div className="px-6 mb-10">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-[0.6rem] uppercase tracking-[0.2em] text-accent font-bold opacity-50">Agrupamento</p>
+            <div className="h-px bg-glass-border flex-1 ml-4 opacity-20"></div>
+          </div>
+          <div className="space-y-1">
+            <button
+              onClick={() => {
+                setView('grouped-by-client');
+                setIsMobileOpen(false);
+              }}
+              className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all text-xs font-bold border ${
+                view === 'grouped-by-client' 
+                  ? 'bg-blue-600/20 border-blue-500/50 text-white shadow-[0_0_20px_rgba(37,99,235,0.2)]' 
+                  : 'hover:bg-white/5 text-text-secondary border-transparent'
+              }`}
+            >
+              <User className={`w-3.5 h-3.5 ${view === 'grouped-by-client' ? 'text-accent' : 'opacity-40'}`} />
+              Filtro por Cliente
+            </button>
           </div>
         </div>
       </nav>
