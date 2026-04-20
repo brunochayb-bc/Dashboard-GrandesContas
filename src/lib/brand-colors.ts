@@ -5,7 +5,7 @@ export const getBrandColor = (client: string) => {
   if (name.includes('bradesco')) return '#cc092f';
   if (name.includes('banco do brasil')) return '#f8d117';
   if (name.includes('cef') || name.includes('caixa')) return '#38bdf8';
-  if (name.includes('xp')) return '#2563eb';
+  if (name.includes('xp')) return '#cbd5e1';
   return null;
 };
 
@@ -16,6 +16,6 @@ export const getBrandStripClass = (client: string) => {
   if (name.includes('bradesco')) return 'bg-gradient-to-r from-[#cc092f] via-[#cc092f] to-white';
   if (name.includes('banco do brasil')) return 'bg-[#f8d117]';
   if (name.includes('cef') || name.includes('caixa')) return 'bg-[#38bdf8]';
-  if (name.includes('xp')) return 'bg-gradient-to-r from-black to-blue-600';
+  if (name.includes('xp')) return 'bg-gradient-to-r from-[#94a3b8] via-[#e2e8f0] to-[#94a3b8]';
   return 'bg-glass-border/30';
 };
