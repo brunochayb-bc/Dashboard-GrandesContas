@@ -15,9 +15,15 @@ import { getBrandColor } from '../lib/brand-colors';
 
 interface DashboardChartsProps {
   negotiations: Negotiation[];
+  onClientClick?: (client: string) => void;
+  onProductClick?: (product: string) => void;
 }
 
-export const DashboardCharts: React.FC<DashboardChartsProps> = ({ negotiations }) => {
+export const DashboardCharts: React.FC<DashboardChartsProps> = ({ 
+  negotiations, 
+  onClientClick, 
+  onProductClick 
+}) => {
   // 1. Calculate Monthly Data (until Dec 2026)
   const monthlyData = useMemo(() => {
     const months = [
@@ -97,7 +103,11 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ negotiations }
             {clientBreakdown.map(([client, total]) => {
               const brandColor = getBrandColor(client);
               return (
-                <div key={client} className="group cursor-default">
+                <div 
+                  key={client} 
+                  className="group cursor-pointer"
+                  onClick={() => onClientClick?.(client)}
+                >
                   <div className="flex justify-between items-end mb-2">
                     <span className="text-sm font-bold text-white group-hover:text-accent transition-colors">{client}</span>
                     <span className="text-sm font-mono text-text-secondary">{formatCurrency(total)}</span>
@@ -129,7 +139,11 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({ negotiations }
           </h3>
           <div className="space-y-4">
             {productBreakdown.map(([product, total]) => (
-              <div key={product} className="group cursor-default">
+              <div 
+                key={product} 
+                className="group cursor-pointer"
+                onClick={() => onProductClick?.(product)}
+              >
                 <div className="flex justify-between items-end mb-2">
                   <span className="text-sm font-bold text-white group-hover:text-accent transition-colors">{product}</span>
                   <span className="text-sm font-mono text-text-secondary">{formatCurrency(total)}</span>

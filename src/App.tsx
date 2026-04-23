@@ -407,7 +407,11 @@ export default function App() {
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <DashboardCharts negotiations={filteredNegotiations} />
+                      <DashboardCharts 
+                        negotiations={filteredNegotiations} 
+                        onClientClick={setSelectedClient}
+                        onProductClick={(p) => setActiveFilter(`product-${p}`)}
+                      />
                     </motion.div>
                   )}
                 </AnimatePresence>
