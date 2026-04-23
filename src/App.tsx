@@ -22,6 +22,7 @@ import { NegotiationCard } from './components/NegotiationCard';
 import { GroupedClientCard } from './components/GroupedClientCard';
 import { DataEntry } from './components/DataEntry';
 import { DashboardCharts } from './components/DashboardCharts';
+import { NegotiationFormModal } from './components/NegotiationFormModal';
 import { TrendingUp, LogIn, Filter, Bell, Search, Menu as MenuIcon, Briefcase, BarChart3, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -38,6 +39,8 @@ export default function App() {
   const [selectedClient, setSelectedClient] = useState('all');
   const [selectedProductFilter, setSelectedProductFilter] = useState('all');
   const [isChartsOpen, setIsChartsOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedNegForEdit, setSelectedNegForEdit] = useState<Negotiation | null>(null);
 
   const editRef = useRef<((neg: Negotiation) => void) | null>(null);
 
@@ -435,13 +438,8 @@ export default function App() {
           negotiation={neg} 
           isActiveClient={selectedClient !== 'all' && neg.client === selectedClient}
           onEdit={(n) => {
-            setView('data-entry');
-            // Give time for DataEntry to mount
-            setTimeout(() => {
-              if (editRef.current) {
-                editRef.current(n);
-              }
-            }, 50);
+            setSelectedNegForEdit(n);
+            setIsEditModalOpen(true);
           }}
         />
       ))}
@@ -493,6 +491,15 @@ export default function App() {
           </AnimatePresence>
         </div>
       </div>
+      
+      <NegotiationFormModal 
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedNegForEdit(null);
+        }}
+        negotiation={selectedNegForEdit}
+      />
     </div>
   );
 }
