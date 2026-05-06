@@ -163,7 +163,14 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
                 <tr key={neg.id} className="hover:bg-white/5 group transition-colors">
                   <td className="px-8 py-5 text-white font-bold">{neg.client}</td>
                   <td className="px-8 py-5">
-                    <div className="text-white font-medium">{neg.product}</div>
+                    <div className="flex items-center gap-2">
+                      <div className="text-white font-medium">{neg.product}</div>
+                      {neg.status === 'fechado' && (
+                        <span className="px-1 py-0.5 bg-[#4ade80]/10 text-[#4ade80] text-[0.5rem] font-black uppercase rounded border border-[#4ade80]/20">
+                          FECHADO
+                        </span>
+                      )}
+                    </div>
                     <div className="text-[0.6rem] text-accent font-bold tracking-widest uppercase mt-1">{neg.area}</div>
                   </td>
                   <td className="px-8 py-5 text-text-secondary">

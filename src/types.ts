@@ -6,6 +6,7 @@ export interface Negotiation {
   closeDate: string;
   value: number;
   observations: string;
+  status: 'em andamento' | 'fechado';
   userId: string;
   createdAt: any;
 }

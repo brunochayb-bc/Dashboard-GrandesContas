@@ -57,10 +57,17 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
               {negotiation.product}
             </div>
 
-            {/* 3. Area Label */}
-            <span className="inline-block px-1.5 py-0.5 bg-white/5 text-text-secondary text-[0.55rem] font-bold uppercase tracking-widest rounded border border-glass-border">
-              {negotiation.area}
-            </span>
+            {/* 3. Area Label & Status */}
+            <div className="flex items-center gap-2">
+              <span className="inline-block px-1.5 py-0.5 bg-white/5 text-text-secondary text-[0.55rem] font-bold uppercase tracking-widest rounded border border-glass-border">
+                {negotiation.area}
+              </span>
+              {negotiation.status === 'fechado' && (
+                <span className="inline-block px-1.5 py-0.5 bg-[#4ade80]/10 text-[#4ade80] text-[0.55rem] font-black uppercase tracking-widest rounded border border-[#4ade80]/20">
+                  FECHADO
+                </span>
+              )}
+            </div>
           </div>
           
           <button 

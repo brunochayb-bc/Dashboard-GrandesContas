@@ -22,6 +22,7 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
     closeDate: '',
     value: 0,
     observations: '',
+    status: 'em andamento' as 'em andamento' | 'fechado',
   });
 
   const formatBRL = (val: number) => {
@@ -40,6 +41,7 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
         closeDate: negotiation.closeDate,
         value: negotiation.value,
         observations: negotiation.observations || '',
+        status: negotiation.status || 'em andamento',
       });
       setDisplayValue(formatBRL(negotiation.value));
     } else {
@@ -50,6 +52,7 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
         closeDate: '',
         value: 0,
         observations: '',
+        status: 'em andamento',
       });
       setDisplayValue('');
     }
@@ -144,6 +147,25 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
                       className="w-full bg-white/5 border border-glass-border rounded-xl py-3 px-4 focus:outline-none focus:border-accent text-sm text-white transition-all"
                       placeholder="Ex: SaaS Premium"
                     />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Status</label>
+                  <div className="flex gap-4">
+                    {['em andamento', 'fechado'].map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, status: s as any })}
+                        className={`flex-1 py-3 rounded-xl text-[0.65rem] font-black uppercase tracking-widest transition-all border ${
+                          formData.status === s 
+                            ? 'bg-accent/20 border-accent text-white' 
+                            : 'bg-white/5 border-glass-border text-text-secondary hover:bg-white/10'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
