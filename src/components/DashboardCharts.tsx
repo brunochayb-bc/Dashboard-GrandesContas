@@ -17,12 +17,14 @@ interface DashboardChartsProps {
   negotiations: Negotiation[];
   onClientClick?: (client: string) => void;
   onProductClick?: (product: string) => void;
+  onMonthClick?: (month: string) => void;
 }
 
 export const DashboardCharts: React.FC<DashboardChartsProps> = ({ 
   negotiations, 
   onClientClick, 
-  onProductClick 
+  onProductClick,
+  onMonthClick
 }) => {
   // 1. Calculate Monthly Data (until Dec 2026)
   const monthlyData = useMemo(() => {
@@ -221,6 +223,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
                     key={`cell-${index}`} 
                     fill={entry.total > 0 ? '#60a5fa' : 'rgba(255,255,255,0.05)'} 
                     className="hover:brightness-125 transition-all cursor-pointer"
+                    onClick={() => onMonthClick?.(entry.name)}
                   />
                 ))}
               </Bar>

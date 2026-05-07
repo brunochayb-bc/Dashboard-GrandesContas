@@ -38,6 +38,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClient, setSelectedClient] = useState('all');
   const [selectedProductFilter, setSelectedProductFilter] = useState('all');
+  const [selectedMonth, setSelectedMonth] = useState('all');
   const [isChartsOpen, setIsChartsOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedNegForEdit, setSelectedNegForEdit] = useState<Negotiation | null>(null);
@@ -104,7 +105,7 @@ export default function App() {
     return Array.from(new Set(negotiations.map(n => n.client))).sort();
   }, [negotiations]);
 
-  const filteredNegotiations = useMemo(() => {
+  const negotiationsForCharts = useMemo(() => {
     let result = [...negotiations];
 
     if (searchQuery) {
@@ -137,6 +138,23 @@ export default function App() {
 
     return result;
   }, [negotiations, activeFilter, searchQuery, selectedClient, selectedProductFilter]);
+
+  const filteredNegotiations = useMemo(() => {
+    let result = [...negotiationsForCharts];
+
+    if (selectedMonth !== 'all') {
+      const months = [
+        'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
+        'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+      ];
+      result = result.filter(n => {
+        const date = new Date(n.closeDate + 'T12:00:00');
+        return date.getFullYear() === 2026 && months[date.getMonth()] === selectedMonth;
+      });
+    }
+
+    return result;
+  }, [negotiationsForCharts, selectedMonth]);
 
   // Calculations reflect filters
   const totalRevenue = useMemo(() => {
@@ -237,6 +255,7 @@ export default function App() {
         setActiveFilter={setActiveFilter}
         selectedClient={selectedClient}
         setSelectedClient={setSelectedClient}
+        setSelectedMonth={setSelectedMonth}
         areas={areas}
         products={products}
         clientsList={clientsList}
@@ -274,7 +293,10 @@ export default function App() {
                 <div className="relative group w-full lg:w-auto">
                   <select 
                     value={selectedClient}
-                    onChange={(e) => setSelectedClient(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedClient(e.target.value);
+                      setSelectedMonth('all');
+                    }}
                     className={`bg-white/5 border rounded-xl px-4 py-2 text-[11px] font-bold text-white outline-none focus:ring-2 focus:ring-accent/30 transition-all cursor-pointer whitespace-nowrap min-w-[140px] appearance-none pr-8 ${
                       selectedClient !== 'all' ? 'border-transparent shadow-lg' : 'border-glass-border'
                     }`}
@@ -397,7 +419,7 @@ export default function App() {
                   <div className="flex items-center gap-3 bg-white/5 border border-glass-border p-2 rounded-xl">
                      <Filter className="w-4 h-4 text-accent ml-2" />
                      <p className="text-[0.7rem] font-bold tracking-widest text-text-secondary pr-4 uppercase">
-                       {activeFilter === 'area-all' || activeFilter === 'product-all' ? 'VISÃO INTEGRAL' : activeFilter.split('-')[1]}
+                       {selectedMonth !== 'all' ? selectedMonth : (activeFilter === 'area-all' || activeFilter === 'product-all' ? 'VISÃO INTEGRAL' : activeFilter.split('-')[1])}
                      </p>
                   </div>
                 </div>
@@ -411,9 +433,16 @@ export default function App() {
                       className="overflow-hidden"
                     >
                       <DashboardCharts 
-                        negotiations={filteredNegotiations} 
-                        onClientClick={setSelectedClient}
-                        onProductClick={(p) => setActiveFilter(`product-${p}`)}
+                        negotiations={negotiationsForCharts} 
+                        onClientClick={(c) => {
+                          setSelectedClient(c);
+                          setSelectedMonth('all');
+                        }}
+                        onProductClick={(p) => {
+                          setActiveFilter(`product-${p}`);
+                          setSelectedMonth('all');
+                        }}
+                        onMonthClick={(m) => setSelectedMonth(m === selectedMonth ? 'all' : m)}
                       />
                     </motion.div>
                   )}

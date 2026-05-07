@@ -10,6 +10,7 @@ interface SidebarProps {
   setActiveFilter: (filter: string) => void;
   selectedClient: string;
   setSelectedClient: (client: string) => void;
+  setSelectedMonth: (month: string) => void;
   areas: string[];
   products: string[];
   clientsList: string[];
@@ -19,7 +20,7 @@ interface SidebarProps {
 
 export function Sidebar({ 
   view, setView, activeFilter, setActiveFilter, 
-  selectedClient, setSelectedClient,
+  selectedClient, setSelectedClient, setSelectedMonth,
   areas, products, clientsList, isMobileOpen, setIsMobileOpen 
 }: SidebarProps) {
   const [isAreasOpen, setIsAreasOpen] = useState(false);
@@ -33,12 +34,14 @@ export function Sidebar({
 
   const handleFilterClick = (filter: string) => {
     setActiveFilter(filter);
+    setSelectedMonth('all');
     if (view !== 'dashboard') setView('dashboard');
     setIsMobileOpen(false);
   };
 
   const handleClientClick = (client: string) => {
     setSelectedClient(client);
+    setSelectedMonth('all');
     if (view !== 'dashboard') setView('dashboard');
     setIsMobileOpen(false);
   };
@@ -51,6 +54,7 @@ export function Sidebar({
             setView('dashboard');
             setSelectedClient('all');
             setActiveFilter('area-all');
+            setSelectedMonth('all');
             setIsMobileOpen(false);
           }}
           className="text-left group transition-all"
