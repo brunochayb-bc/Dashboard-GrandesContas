@@ -31,7 +31,9 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
         scale: 1.01,
         transition: { duration: 0.2, ease: "easeOut" }
       }}
-      className={`glass-card flex flex-col transition-all group overflow-hidden cursor-pointer ${isActiveClient ? 'border-opacity-100' : 'hover:border-accent/30'}`}
+      className={`glass-card flex flex-col transition-all group overflow-hidden cursor-pointer ${
+        isActiveClient ? 'border-opacity-100' : 'hover:border-accent/30'
+      } ${negotiation.status === 'fechado' ? 'opacity-30 grayscale hover:opacity-50 transition-opacity' : ''}`}
       style={{ 
         borderColor: isActiveClient && brandColor ? brandColor : undefined,
         boxShadow: isActiveClient && brandColor ? `0 0 25px ${brandColor}40` : undefined,

@@ -160,7 +160,12 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
               </tr>
             ) : (
               sortedNegotiations.map((neg) => (
-                <tr key={neg.id} className="hover:bg-white/5 group transition-colors">
+                <tr 
+                  key={neg.id} 
+                  className={`hover:bg-white/5 group transition-all ${
+                    neg.status === 'fechado' ? 'opacity-20 grayscale border-l-2 border-l-transparent' : ''
+                  }`}
+                >
                   <td className="px-8 py-5 text-white font-bold">{neg.client}</td>
                   <td className="px-8 py-5">
                     <div className="flex items-center gap-2">
