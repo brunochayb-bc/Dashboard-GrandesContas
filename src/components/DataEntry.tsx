@@ -170,6 +170,13 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
                   <td className="px-8 py-5">
                     <div className="flex items-center gap-2">
                       <div className="text-white font-medium">{neg.product}</div>
+                      <span className={`px-1 py-0.5 text-[0.5rem] font-bold uppercase rounded border ${
+                        (neg.team || 'Vendas') === 'Vendas' 
+                          ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' 
+                          : 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+                      }`}>
+                        {neg.team || 'Vendas'}
+                      </span>
                       {neg.status === 'fechado' && (
                         <span className="px-1 py-0.5 bg-[#4ade80]/10 text-[#4ade80] text-[0.5rem] font-black uppercase rounded border border-[#4ade80]/20">
                           FECHADO

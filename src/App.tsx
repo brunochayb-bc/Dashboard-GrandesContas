@@ -39,6 +39,7 @@ export default function App() {
   const [selectedClient, setSelectedClient] = useState('all');
   const [selectedProductFilter, setSelectedProductFilter] = useState('all');
   const [selectedMonth, setSelectedMonth] = useState('all');
+  const [selectedTeam, setSelectedTeam] = useState('all');
   const [isChartsOpen, setIsChartsOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedNegForEdit, setSelectedNegForEdit] = useState<Negotiation | null>(null);
@@ -124,6 +125,10 @@ export default function App() {
       result = result.filter(n => n.product === selectedProductFilter);
     }
 
+    if (selectedTeam !== 'all') {
+      result = result.filter(n => (n.team || 'Vendas') === selectedTeam);
+    }
+
     if (activeFilter.startsWith('area-')) {
       const areaVal = activeFilter.split('area-')[1];
       if (areaVal !== 'all') {
@@ -137,7 +142,7 @@ export default function App() {
     }
 
     return result;
-  }, [negotiations, activeFilter, searchQuery, selectedClient, selectedProductFilter]);
+  }, [negotiations, activeFilter, searchQuery, selectedClient, selectedProductFilter, selectedTeam]);
 
   const filteredNegotiations = useMemo(() => {
     let result = [...negotiationsForCharts];
@@ -255,6 +260,8 @@ export default function App() {
         setActiveFilter={setActiveFilter}
         selectedClient={selectedClient}
         setSelectedClient={setSelectedClient}
+        selectedTeam={selectedTeam}
+        setSelectedTeam={setSelectedTeam}
         setSelectedMonth={setSelectedMonth}
         areas={areas}
         products={products}
@@ -419,7 +426,13 @@ export default function App() {
                   <div className="flex items-center gap-3 bg-white/5 border border-glass-border p-2 rounded-xl">
                      <Filter className="w-4 h-4 text-accent ml-2" />
                      <p className="text-[0.7rem] font-bold tracking-widest text-text-secondary pr-4 uppercase">
-                       {selectedMonth !== 'all' ? selectedMonth : (activeFilter === 'area-all' || activeFilter === 'product-all' ? 'VISÃO INTEGRAL' : activeFilter.split('-')[1])}
+                       {selectedMonth !== 'all' 
+                         ? selectedMonth 
+                         : (selectedTeam !== 'all' 
+                             ? `TIME: ${selectedTeam}` 
+                             : (activeFilter === 'area-all' || activeFilter === 'product-all' ? 'VISÃO INTEGRAL' : activeFilter.split('-')[1])
+                           )
+                       }
                      </p>
                   </div>
                 </div>
@@ -434,6 +447,8 @@ export default function App() {
                     >
                       <DashboardCharts 
                         negotiations={negotiationsForCharts} 
+                        selectedTeam={selectedTeam}
+                        onTeamClick={setSelectedTeam}
                         onClientClick={(c) => {
                           setSelectedClient(c);
                           setSelectedMonth('all');

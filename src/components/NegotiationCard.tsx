@@ -27,12 +27,16 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ 
-        y: -6, 
-        scale: 1.01,
+        y: -8, 
+        scale: 1.02,
+        borderColor: brandColor ? `${brandColor}80` : 'rgba(96, 165, 250, 0.4)',
+        boxShadow: brandColor 
+          ? `0 10px 30px -10px ${brandColor}40, 0 0 20px ${brandColor}20` 
+          : '0 10px 30px -10px rgba(0,0,0,0.5), 0 0 20px rgba(96, 165, 250, 0.1)',
         transition: { duration: 0.2, ease: "easeOut" }
       }}
       className={`glass-card flex flex-col transition-all group overflow-hidden cursor-pointer ${
-        isActiveClient ? 'border-opacity-100' : 'hover:border-accent/30'
+        isActiveClient ? 'border-opacity-100 shadow-lg' : 'hover:border-transparent'
       } ${negotiation.status === 'fechado' ? 'opacity-30 grayscale hover:opacity-50 transition-opacity' : ''}`}
       style={{ 
         borderColor: isActiveClient && brandColor ? brandColor : undefined,
@@ -63,6 +67,13 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
             <div className="flex items-center gap-2">
               <span className="inline-block px-1.5 py-0.5 bg-white/5 text-text-secondary text-[0.55rem] font-bold uppercase tracking-widest rounded border border-glass-border">
                 {negotiation.area}
+              </span>
+              <span className={`inline-block px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-widest rounded border ${
+                (negotiation.team || 'Vendas') === 'Vendas' 
+                  ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' 
+                  : 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+              }`}>
+                {negotiation.team || 'Vendas'}
               </span>
               {negotiation.status === 'fechado' && (
                 <span className="inline-block px-1.5 py-0.5 bg-[#4ade80]/10 text-[#4ade80] text-[0.55rem] font-black uppercase tracking-widest rounded border border-[#4ade80]/20">

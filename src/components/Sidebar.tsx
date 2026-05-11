@@ -10,6 +10,8 @@ interface SidebarProps {
   setActiveFilter: (filter: string) => void;
   selectedClient: string;
   setSelectedClient: (client: string) => void;
+  selectedTeam: string;
+  setSelectedTeam: (team: string) => void;
   setSelectedMonth: (month: string) => void;
   areas: string[];
   products: string[];
@@ -20,11 +22,14 @@ interface SidebarProps {
 
 export function Sidebar({ 
   view, setView, activeFilter, setActiveFilter, 
-  selectedClient, setSelectedClient, setSelectedMonth,
+  selectedClient, setSelectedClient, 
+  selectedTeam, setSelectedTeam,
+  setSelectedMonth,
   areas, products, clientsList, isMobileOpen, setIsMobileOpen 
 }: SidebarProps) {
   const [isAreasOpen, setIsAreasOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const [isTeamsOpen, setIsTeamsOpen] = useState(false);
   const [isClientsOpen, setIsClientsOpen] = useState(true);
 
   const menuItems = [
@@ -41,6 +46,13 @@ export function Sidebar({
 
   const handleClientClick = (client: string) => {
     setSelectedClient(client);
+    setSelectedMonth('all');
+    if (view !== 'dashboard') setView('dashboard');
+    setIsMobileOpen(false);
+  };
+
+  const handleTeamClick = (team: string) => {
+    setSelectedTeam(team);
     setSelectedMonth('all');
     if (view !== 'dashboard') setView('dashboard');
     setIsMobileOpen(false);
@@ -64,6 +76,61 @@ export function Sidebar({
             <span className="text-yellow-400 text-[10px] tracking-widest font-black uppercase">Negociações em andamento</span>
           </h1>
         </button>
+
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-[0.6rem] uppercase tracking-[0.2em] text-accent font-bold opacity-50">Filtro por Time</p>
+            <div className="h-px bg-glass-border flex-1 ml-4 opacity-20"></div>
+          </div>
+          <div className="space-y-1">
+            <button
+              onClick={() => {
+                handleTeamClick('all');
+                setIsTeamsOpen(!isTeamsOpen);
+              }}
+              className={`w-full flex justify-between items-center px-4 py-3 rounded-xl text-xs font-bold transition-all border ${
+                selectedTeam === 'all' 
+                  ? 'bg-blue-600/20 text-white border-blue-500/50 shadow-lg' 
+                  : 'hover:bg-white/5 text-text-secondary border-transparent'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <div className={`w-1.5 h-1.5 rounded-full ${selectedTeam === 'all' ? 'bg-accent animate-pulse' : 'bg-white/20'}`} />
+                Exibir Todos os Times
+              </div>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isTeamsOpen ? 'rotate-180' : ''} ${selectedTeam === 'all' ? 'text-accent' : 'opacity-20'}`} />
+            </button>
+            <AnimatePresence>
+              {isTeamsOpen && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="grid grid-cols-1 gap-1 mt-1 overflow-hidden"
+                >
+                  {['Vendas', 'Novos Negócios'].map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => handleTeamClick(t)}
+                      className={`w-full text-left px-9 py-2.5 rounded-xl text-[11px] font-medium transition-all group relative ${
+                        selectedTeam === t 
+                          ? 'bg-accent/10 text-accent font-bold' 
+                          : 'hover:bg-white/5 text-text-secondary hover:text-white'
+                      }`}
+                    >
+                      {selectedTeam === t && (
+                        <motion.div layoutId="team-active" className="absolute left-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-accent" />
+                      )}
+                      <span className="transition-transform group-hover:translate-x-1 inline-block">
+                        {t}
+                      </span>
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto py-6">

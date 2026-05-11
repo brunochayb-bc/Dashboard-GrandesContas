@@ -23,6 +23,7 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
     value: 0,
     observations: '',
     status: 'em andamento' as 'em andamento' | 'fechado',
+    team: 'Vendas' as 'Vendas' | 'Novos Negócios',
   });
 
   const formatBRL = (val: number) => {
@@ -42,6 +43,7 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
         value: negotiation.value,
         observations: negotiation.observations || '',
         status: negotiation.status || 'em andamento',
+        team: negotiation.team || 'Vendas',
       });
       setDisplayValue(formatBRL(negotiation.value));
     } else {
@@ -53,6 +55,7 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
         value: 0,
         observations: '',
         status: 'em andamento',
+        team: 'Vendas',
       });
       setDisplayValue('');
     }
@@ -164,6 +167,25 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
                         }`}
                       >
                         {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Time Responsável</label>
+                  <div className="flex gap-4">
+                    {['Vendas', 'Novos Negócios'].map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, team: t as any })}
+                        className={`flex-1 py-3 rounded-xl text-[0.65rem] font-black uppercase tracking-widest transition-all border ${
+                          formData.team === t 
+                            ? 'bg-blue-500/20 border-blue-500 text-white' 
+                            : 'bg-white/5 border-glass-border text-text-secondary hover:bg-white/10'
+                        }`}
+                      >
+                        {t}
                       </button>
                     ))}
                   </div>

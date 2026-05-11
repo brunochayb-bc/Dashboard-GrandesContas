@@ -15,6 +15,8 @@ import { getBrandColor } from '../lib/brand-colors';
 
 interface DashboardChartsProps {
   negotiations: Negotiation[];
+  selectedTeam: string;
+  onTeamClick: (team: string) => void;
   onClientClick?: (client: string) => void;
   onProductClick?: (product: string) => void;
   onMonthClick?: (month: string) => void;
@@ -22,6 +24,8 @@ interface DashboardChartsProps {
 
 export const DashboardCharts: React.FC<DashboardChartsProps> = ({ 
   negotiations, 
+  selectedTeam,
+  onTeamClick,
   onClientClick, 
   onProductClick,
   onMonthClick
@@ -89,6 +93,34 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
 
   return (
     <div className="space-y-8 mb-12 select-none">
+      {/* Team Selection Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/5 border border-glass-border p-4 rounded-2xl">
+        <div>
+          <p className="text-[0.6rem] font-bold tracking-[0.2em] text-accent uppercase mb-1">Filtrar por Time</p>
+          <div className="flex gap-2">
+            {['all', 'Vendas', 'Novos Negócios'].map((t) => (
+              <button
+                key={t}
+                onClick={() => onTeamClick(t)}
+                className={`px-4 py-2 rounded-xl text-[0.65rem] font-black uppercase tracking-widest transition-all border ${
+                  selectedTeam === t 
+                    ? 'bg-blue-600/30 border-blue-500 text-white shadow-[0_0_15px_rgba(37,99,235,0.3)]' 
+                    : 'bg-white/5 border-glass-border text-text-secondary hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {t === 'all' ? 'Todos os Times' : t}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-3 pr-2">
+          <div className="h-8 w-px bg-glass-border opacity-20 hidden sm:block" />
+          <p className="text-[0.6rem] font-bold tracking-widest text-text-secondary uppercase">
+            {negotiations.length} {negotiations.length === 1 ? 'Oportunidade' : 'Oportunidades'}
+          </p>
+        </div>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* By Client */}

@@ -13,6 +13,7 @@
         "value": { "type": "number", "description": "The expected value of the negotiation." },
         "observations": { "type": "string", "description": "Additional notes about the negotiation." },
         "status": { "type": "string", "enum": ["em andamento", "fechado"], "description": "Current state of the negotiation." },
+        "team": { "type": "string", "enum": ["Vendas", "Novos Negócios"], "description": "The team responsible for the negotiation." },
         "userId": { "type": "string", "description": "ID of the user who owns this record." },
         "createdAt": { "type": "string", "format": "date-time" }
       },

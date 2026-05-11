@@ -7,6 +7,7 @@ export interface Negotiation {
   value: number;
   observations: string;
   status: 'em andamento' | 'fechado';
+  team: 'Vendas' | 'Novos Negócios';
   userId: string;
   createdAt: any;
 }
