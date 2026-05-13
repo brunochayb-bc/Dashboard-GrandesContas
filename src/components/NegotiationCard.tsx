@@ -14,10 +14,15 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
   const [showDetails, setShowDetails] = useState(false);
 
   const formattedDate = new Date(negotiation.closeDate + 'T12:00:00').toLocaleDateString('pt-BR');
-  const formattedValue = new Intl.NumberFormat('pt-BR', {
+  const formattedMRRValue = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
   }).format(negotiation.value);
+
+  const formattedSetupValue = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(negotiation.setupValue || 0);
 
   const brandColor = getBrandColor(negotiation.client);
 
@@ -57,7 +62,7 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
             
             {/* 2. Product */}
             <div 
-              className="text-base font-black text-white mb-2 group-hover:text-accent transition-colors truncate"
+              className="text-base font-black text-white mb-1 group-hover:text-accent transition-colors truncate"
               style={brandColor ? { color: brandColor } : {}}
             >
               {negotiation.product}
@@ -95,21 +100,23 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
         </div>
 
         {/* Existing Grid with Date and Value */}
-        <div className="grid grid-cols-2 gap-2 pt-3 border-t border-glass-border">
-          <div className="flex flex-col">
-            <span className="text-[0.55rem] text-text-secondary uppercase leading-tight">Previsão</span>
-            <span className="text-xs font-semibold">{formattedDate}</span>
+        <div className="space-y-3 pt-3 border-t border-glass-border">
+          <div className="flex justify-between items-center">
+            <div className="flex flex-col">
+              <span className="text-[0.55rem] text-text-secondary uppercase leading-tight font-bold">Prev. Fechamento</span>
+              <span className="text-[11px] font-medium text-white">{formattedDate}</span>
+            </div>
           </div>
-          <div className="flex flex-col items-end">
-            <span className="text-[0.55rem] text-text-secondary uppercase leading-tight">Valor</span>
-            <span className="text-xs font-bold text-[#4ade80]">{formattedValue}</span>
-            <span className={`text-[0.5rem] font-bold uppercase mt-1 px-1 rounded-sm ${
-              (negotiation.revenueType || 'Recorrente/MRR') === 'Recorrente/MRR'
-                ? 'bg-emerald-500/10 text-emerald-400'
-                : 'bg-orange-500/10 text-orange-400'
-            }`}>
-              {negotiation.revenueType || 'Recorrente/MRR'}
-            </span>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col bg-white/5 p-2 rounded-lg border border-glass-border">
+              <span className="text-[0.45rem] text-accent uppercase font-black tracking-widest mb-1">Recorrente/MRR</span>
+              <span className="text-[0.7rem] font-black text-white">{formattedMRRValue}</span>
+            </div>
+            <div className="flex flex-col bg-white/5 p-2 rounded-lg border border-glass-border">
+              <span className="text-[0.45rem] text-blue-400 uppercase font-black tracking-widest mb-1 text-right">Setup/Único</span>
+              <span className="text-[0.7rem] font-black text-white text-right">{formattedSetupValue}</span>
+            </div>
           </div>
         </div>
       </div>

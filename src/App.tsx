@@ -40,10 +40,10 @@ export default function App() {
   const [selectedProductFilter, setSelectedProductFilter] = useState('all');
   const [selectedMonth, setSelectedMonth] = useState('all');
   const [selectedTeam, setSelectedTeam] = useState('all');
-  const [selectedRevenueType, setSelectedRevenueType] = useState('all');
   const [isChartsOpen, setIsChartsOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedNegForEdit, setSelectedNegForEdit] = useState<Negotiation | null>(null);
+  const [valueMode, setValueMode] = useState<'mrr' | 'setup' | 'total'>('mrr');
 
   const editRef = useRef<((neg: Negotiation) => void) | null>(null);
 
@@ -130,10 +130,6 @@ export default function App() {
       result = result.filter(n => (n.team || 'Vendas') === selectedTeam);
     }
 
-    if (selectedRevenueType !== 'all') {
-      result = result.filter(n => (n.revenueType || 'Recorrente/MRR') === selectedRevenueType);
-    }
-
     if (activeFilter.startsWith('area-')) {
       const areaVal = activeFilter.split('area-')[1];
       if (areaVal !== 'all') {
@@ -147,7 +143,7 @@ export default function App() {
     }
 
     return result;
-  }, [negotiations, activeFilter, searchQuery, selectedClient, selectedProductFilter, selectedTeam, selectedRevenueType]);
+  }, [negotiations, activeFilter, searchQuery, selectedClient, selectedProductFilter, selectedTeam]);
 
   const filteredNegotiations = useMemo(() => {
     let result = [...negotiationsForCharts];
@@ -168,8 +164,11 @@ export default function App() {
 
   // Calculations reflect filters
   const totalRevenue = useMemo(() => {
-    return filteredNegotiations.reduce((sum, n) => sum + n.value, 0);
-  }, [filteredNegotiations]);
+    return filteredNegotiations.reduce((sum, n) => {
+      const val = valueMode === 'mrr' ? n.value : (valueMode === 'setup' ? (n.setupValue || 0) : n.value + (n.setupValue || 0));
+      return sum + val;
+    }, 0);
+  }, [filteredNegotiations, valueMode]);
 
   const groupedByClient = useMemo(() => {
     const groups: Record<string, { client: string, products: Set<string>, totalValue: number }> = {};
@@ -183,11 +182,12 @@ export default function App() {
         };
       }
       groups[neg.client].products.add(neg.product);
-      groups[neg.client].totalValue += neg.value;
+      const val = valueMode === 'mrr' ? neg.value : (valueMode === 'setup' ? (neg.setupValue || 0) : neg.value + (neg.setupValue || 0));
+      groups[neg.client].totalValue += val;
     });
     
     return Object.values(groups).sort((a, b) => b.totalValue - a.totalValue);
-  }, [filteredNegotiations]);
+  }, [filteredNegotiations, valueMode]);
 
   const lastUpdated = useMemo(() => {
     if (negotiations.length === 0) return null;
@@ -267,8 +267,6 @@ export default function App() {
         setSelectedClient={setSelectedClient}
         selectedTeam={selectedTeam}
         setSelectedTeam={setSelectedTeam}
-        selectedRevenueType={selectedRevenueType}
-        setSelectedRevenueType={setSelectedRevenueType}
         setSelectedMonth={setSelectedMonth}
         areas={areas}
         products={products}
@@ -345,7 +343,9 @@ export default function App() {
 
             <div className="flex items-center justify-between lg:justify-end w-full lg:w-auto gap-4 pt-4 lg:pt-0 border-t lg:border-t-0 border-glass-border lg:border-l lg:pl-10">
               <div className="flex flex-col items-end">
-                <span className="text-[0.6rem] font-bold tracking-[0.2em] text-[#4ade80] uppercase leading-none mb-2 opacity-50">Incremento Mensal Previsto</span>
+                <span className="text-[0.6rem] font-bold tracking-[0.2em] text-[#4ade80] uppercase leading-none mb-2 opacity-50">
+                  {valueMode === 'mrr' ? 'Incremento Mensal (MRR)' : (valueMode === 'setup' ? 'Total Setup/Único' : 'Total Acumulado (MRR+Setup)')}
+                </span>
                 <div className="flex items-center gap-3 text-[#4ade80]">
                   <TrendingUp className="w-5 h-5 hidden sm:block opacity-40" />
                   <span className="text-xl lg:text-2xl font-black tracking-tighter leading-none text-white drop-shadow-lg">
@@ -396,6 +396,25 @@ export default function App() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                        <h2 className="text-lg font-black tracking-widest text-white uppercase">Visão Geral</h2>
+                       <div className="flex gap-1 bg-white/5 border border-glass-border p-1 rounded-xl ml-4">
+                        {[
+                          { id: 'mrr', label: 'MRR' },
+                          { id: 'setup', label: 'Setup' },
+                          { id: 'total', label: 'Total' }
+                        ].map((m) => (
+                          <button
+                            key={m.id}
+                            onClick={() => setValueMode(m.id as any)}
+                            className={`px-3 py-1.5 rounded-lg text-[0.6rem] font-black uppercase tracking-widest transition-all ${
+                              valueMode === m.id 
+                                ? 'bg-accent text-white shadow-lg shadow-accent/20' 
+                                : 'text-text-secondary hover:text-white hover:bg-white/5'
+                            }`}
+                          >
+                            {m.label}
+                          </button>
+                        ))}
+                       </div>
                        {selectedClient !== 'all' && (
                          <div className="flex items-center gap-2">
                             <span className="text-text-secondary opacity-30 text-xl font-thin mx-2">/</span>
@@ -437,10 +456,7 @@ export default function App() {
                          ? selectedMonth 
                          : (selectedTeam !== 'all' 
                              ? `TIME: ${selectedTeam}` 
-                             : (selectedRevenueType !== 'all'
-                                 ? `FINANCEIRO: ${selectedRevenueType}`
-                                 : (activeFilter === 'area-all' || activeFilter === 'product-all' ? 'VISÃO INTEGRAL' : activeFilter.split('-')[1])
-                               )
+                             : (activeFilter === 'area-all' || activeFilter === 'product-all' ? 'VISÃO INTEGRAL' : activeFilter.split('-')[1])
                            )
                        }
                      </p>
@@ -458,9 +474,9 @@ export default function App() {
                       <DashboardCharts 
                         negotiations={negotiationsForCharts} 
                         selectedTeam={selectedTeam}
+                        valueMode={valueMode}
+                        onValueModeChange={setValueMode}
                         onTeamClick={setSelectedTeam}
-                        selectedRevenueType={selectedRevenueType}
-                        onRevenueTypeClick={setSelectedRevenueType}
                         onClientClick={(c) => {
                           setSelectedClient(c);
                           setSelectedMonth('all');
@@ -526,6 +542,7 @@ export default function App() {
                       client={group.client}
                       products={Array.from(group.products)}
                       totalValue={group.totalValue}
+                      valueMode={valueMode}
                     />
                   ))}
                 </div>

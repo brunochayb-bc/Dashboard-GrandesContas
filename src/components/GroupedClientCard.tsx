@@ -7,14 +7,17 @@ interface GroupedClientCardProps {
   client: string;
   products: string[];
   totalValue: number;
+  valueMode?: 'mrr' | 'setup' | 'total';
 }
 
-export const GroupedClientCard: React.FC<GroupedClientCardProps> = ({ client, products, totalValue }) => {
+export const GroupedClientCard: React.FC<GroupedClientCardProps> = ({ client, products, totalValue, valueMode = 'mrr' }) => {
   const brandColor = getBrandColor(client);
   const formattedValue = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
   }).format(totalValue);
+
+  const valueLabel = valueMode === 'mrr' ? 'Total MRR' : (valueMode === 'setup' ? 'Total Setup' : 'Valor Total');
 
   return (
     <motion.div
@@ -57,7 +60,7 @@ export const GroupedClientCard: React.FC<GroupedClientCardProps> = ({ client, pr
         <div className="mt-6 pt-4 border-t border-glass-border flex flex-col gap-1">
           <div className="flex items-center gap-1.5">
             <TrendingUp className="w-3 h-3 text-[#4ade80]" />
-            <span className="text-[0.55rem] font-bold uppercase tracking-widest text-[#4ade80]/70">Valor Total Estimado</span>
+            <span className="text-[0.55rem] font-bold uppercase tracking-widest text-[#4ade80]/70">{valueLabel}</span>
           </div>
           <div className="text-xl font-black text-[#4ade80] tracking-tighter">
             {formattedValue}

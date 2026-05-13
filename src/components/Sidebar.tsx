@@ -12,8 +12,6 @@ interface SidebarProps {
   setSelectedClient: (client: string) => void;
   selectedTeam: string;
   setSelectedTeam: (team: string) => void;
-  selectedRevenueType: string;
-  setSelectedRevenueType: (type: string) => void;
   setSelectedMonth: (month: string) => void;
   areas: string[];
   products: string[];
@@ -26,14 +24,12 @@ export function Sidebar({
   view, setView, activeFilter, setActiveFilter, 
   selectedClient, setSelectedClient, 
   selectedTeam, setSelectedTeam,
-  selectedRevenueType, setSelectedRevenueType,
   setSelectedMonth,
   areas, products, clientsList, isMobileOpen, setIsMobileOpen 
 }: SidebarProps) {
   const [isAreasOpen, setIsAreasOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isTeamsOpen, setIsTeamsOpen] = useState(false);
-  const [isRevenueTypeOpen, setIsRevenueTypeOpen] = useState(false);
   const [isClientsOpen, setIsClientsOpen] = useState(true);
 
   const menuItems = [
@@ -57,13 +53,6 @@ export function Sidebar({
 
   const handleTeamClick = (team: string) => {
     setSelectedTeam(team);
-    setSelectedMonth('all');
-    if (view !== 'dashboard') setView('dashboard');
-    setIsMobileOpen(false);
-  };
-  
-  const handleRevenueTypeClick = (type: string) => {
-    setSelectedRevenueType(type);
     setSelectedMonth('all');
     if (view !== 'dashboard') setView('dashboard');
     setIsMobileOpen(false);
@@ -134,61 +123,6 @@ export function Sidebar({
                       )}
                       <span className="transition-transform group-hover:translate-x-1 inline-block">
                         {t}
-                      </span>
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        <div className="mt-8">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-[0.6rem] uppercase tracking-[0.2em] text-accent font-bold opacity-50">Visão Financeira</p>
-            <div className="h-px bg-glass-border flex-1 ml-4 opacity-20"></div>
-          </div>
-          <div className="space-y-1">
-            <button
-              onClick={() => {
-                handleRevenueTypeClick('all');
-                setIsRevenueTypeOpen(!isRevenueTypeOpen);
-              }}
-              className={`w-full flex justify-between items-center px-4 py-3 rounded-xl text-xs font-bold transition-all border ${
-                selectedRevenueType === 'all' 
-                  ? 'bg-emerald-600/20 text-white border-emerald-500/50 shadow-lg' 
-                  : 'hover:bg-white/5 text-text-secondary border-transparent'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <div className={`w-1.5 h-1.5 rounded-full ${selectedRevenueType === 'all' ? 'bg-emerald-400 animate-pulse' : 'bg-white/20'}`} />
-                Todas as Visões
-              </div>
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isRevenueTypeOpen ? 'rotate-180' : ''} ${selectedRevenueType === 'all' ? 'text-emerald-400' : 'opacity-20'}`} />
-            </button>
-            <AnimatePresence>
-              {isRevenueTypeOpen && (
-                <motion.div 
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="grid grid-cols-1 gap-1 mt-1 overflow-hidden"
-                >
-                  {['Recorrente/MRR', 'Setup/Único'].map((r) => (
-                    <button
-                      key={r}
-                      onClick={() => handleRevenueTypeClick(r)}
-                      className={`w-full text-left px-9 py-2.5 rounded-xl text-[11px] font-medium transition-all group relative ${
-                        selectedRevenueType === r 
-                          ? 'bg-emerald-500/10 text-emerald-400 font-bold' 
-                          : 'hover:bg-white/5 text-text-secondary hover:text-white'
-                      }`}
-                    >
-                      {selectedRevenueType === r && (
-                        <motion.div layoutId="revenue-active" className="absolute left-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                      )}
-                      <span className="transition-transform group-hover:translate-x-1 inline-block">
-                        {r}
                       </span>
                     </button>
                   ))}

@@ -14,6 +14,7 @@ interface NegotiationFormModalProps {
 export function NegotiationFormModal({ isOpen, onClose, negotiation }: NegotiationFormModalProps) {
   const [loading, setLoading] = useState(false);
   const [displayValue, setDisplayValue] = useState('');
+  const [displaySetupValue, setDisplaySetupValue] = useState('');
   
   const [formData, setFormData] = useState({
     client: '',
@@ -21,10 +22,10 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
     product: '',
     closeDate: '',
     value: 0,
+    setupValue: 0,
     observations: '',
     status: 'em andamento' as 'em andamento' | 'fechado',
     team: 'Vendas' as 'Vendas' | 'Novos Negócios',
-    revenueType: 'Recorrente/MRR' as 'Recorrente/MRR' | 'Setup/Único',
   });
 
   const formatBRL = (val: number) => {
@@ -42,12 +43,13 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
         product: negotiation.product,
         closeDate: negotiation.closeDate,
         value: negotiation.value,
+        setupValue: negotiation.setupValue || 0,
         observations: negotiation.observations || '',
         status: negotiation.status || 'em andamento',
         team: negotiation.team || 'Vendas',
-        revenueType: negotiation.revenueType || 'Recorrente/MRR',
       });
       setDisplayValue(formatBRL(negotiation.value));
+      setDisplaySetupValue(formatBRL(negotiation.setupValue || 0));
     } else {
       setFormData({
         client: '',
@@ -55,12 +57,13 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
         product: '',
         closeDate: '',
         value: 0,
+        setupValue: 0,
         observations: '',
         status: 'em andamento',
         team: 'Vendas',
-        revenueType: 'Recorrente/MRR',
       });
       setDisplayValue('');
+      setDisplaySetupValue('');
     }
   }, [negotiation, isOpen]);
 
@@ -196,67 +199,69 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
               </div>
 
               <div className="space-y-6 text-left">
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Previsão de Fechamento</label>
+                <div>
+                  <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Previsão de Fechamento</label>
+                  <input
+                    required
+                    tabIndex={4}
+                    type="date"
+                    value={formData.closeDate}
+                    onChange={(e) => setFormData({ ...formData, closeDate: e.target.value })}
+                    className="w-full bg-white/5 border border-glass-border rounded-xl py-3 px-4 focus:outline-none focus:border-accent text-sm text-white transition-all appearance-none uppercase"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Valor Recorrente/MRR (R$)</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-accent">R$</span>
                     <input
                       required
-                      tabIndex={4}
-                      type="date"
-                      value={formData.closeDate}
-                      onChange={(e) => setFormData({ ...formData, closeDate: e.target.value })}
-                      className="w-full bg-white/5 border border-glass-border rounded-xl py-3 px-4 focus:outline-none focus:border-accent text-sm text-white transition-all appearance-none uppercase"
+                      tabIndex={5}
+                      type="text"
+                      value={displayValue}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/\D/g, '');
+                        const val = parseFloat(raw) / 100 || 0;
+                        setFormData({ ...formData, value: val });
+                        setDisplayValue(formatBRL(val));
+                      }}
+                      className="w-full bg-white/5 border border-glass-border rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:border-accent text-sm text-white font-mono transition-all"
+                      placeholder="0,00"
                     />
                   </div>
-                  <div>
-                    <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Valor Previsto (R$)</label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-accent">R$</span>
-                      <input
-                        required
-                        tabIndex={5}
-                        type="text"
-                        value={displayValue}
-                        onChange={(e) => {
-                          const raw = e.target.value.replace(/\D/g, '');
-                          const val = parseFloat(raw) / 100 || 0;
-                          setFormData({ ...formData, value: val });
-                          setDisplayValue(formatBRL(val));
-                        }}
-                        className="w-full bg-white/5 border border-glass-border rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:border-accent text-sm text-white font-mono transition-all"
-                        placeholder="0,00"
-                      />
-                    </div>
+                </div>
+
+                <div>
+                  <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Valor Setup/Único (R$)</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-blue-400">R$</span>
+                    <input
+                      required
+                      tabIndex={5.5}
+                      type="text"
+                      value={displaySetupValue}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/\D/g, '');
+                        const val = parseFloat(raw) / 100 || 0;
+                        setFormData({ ...formData, setupValue: val });
+                        setDisplaySetupValue(formatBRL(val));
+                      }}
+                      className="w-full bg-white/5 border border-glass-border rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:border-accent text-sm text-white font-mono transition-all"
+                      placeholder="0,00"
+                    />
                   </div>
                 </div>
-                <div className="mt-6">
-                  <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Tipo de Receita</label>
-                  <div className="flex gap-4">
-                    {['Recorrente/MRR', 'Setup/Único'].map((r) => (
-                      <button
-                        key={r}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, revenueType: r as any })}
-                        className={`flex-1 py-3 rounded-xl text-[0.65rem] font-black uppercase tracking-widest transition-all border ${
-                          formData.revenueType === r 
-                            ? 'bg-emerald-500/20 border-emerald-500 text-white' 
-                            : 'bg-white/5 border-glass-border text-text-secondary hover:bg-white/10'
-                        }`}
-                      >
-                        {r}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+
                 <div>
                   <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Observações Detalhadas</label>
                   <textarea
                     tabIndex={6}
-                    rows={2}
+                    rows={4}
                     value={formData.observations}
                     onChange={(e) => setFormData({ ...formData, observations: e.target.value })}
-                    className="w-full bg-white/5 border border-glass-border rounded-xl py-3 px-4 focus:outline-none focus:border-accent text-sm text-white resize-none transition-all"
-                    placeholder="Notas internas..."
+                    className="w-full bg-white/5 border border-glass-border rounded-xl py-3 px-4 focus:outline-none focus:border-accent text-sm text-white resize-none transition-all placeholder:opacity-20"
+                    placeholder="Descreva detalhes específicos da negociação, condições especiais ou próximos passos..."
                   />
                 </div>
               </div>

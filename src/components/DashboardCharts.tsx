@@ -16,9 +16,9 @@ import { getBrandColor } from '../lib/brand-colors';
 interface DashboardChartsProps {
   negotiations: Negotiation[];
   selectedTeam: string;
+  valueMode: 'mrr' | 'setup' | 'total';
+  onValueModeChange: (mode: 'mrr' | 'setup' | 'total') => void;
   onTeamClick: (team: string) => void;
-  selectedRevenueType: string;
-  onRevenueTypeClick: (type: string) => void;
   onClientClick?: (client: string) => void;
   onProductClick?: (product: string) => void;
   onMonthClick?: (month: string) => void;
@@ -27,13 +27,22 @@ interface DashboardChartsProps {
 export const DashboardCharts: React.FC<DashboardChartsProps> = ({ 
   negotiations, 
   selectedTeam,
+  valueMode,
+  onValueModeChange,
   onTeamClick,
-  selectedRevenueType,
-  onRevenueTypeClick,
   onClientClick, 
   onProductClick,
   onMonthClick
 }) => {
+  const getValue = (n: Negotiation) => {
+    switch (valueMode) {
+      case 'mrr': return n.value;
+      case 'setup': return n.setupValue || 0;
+      case 'total': return n.value + (n.setupValue || 0);
+      default: return n.value;
+    }
+  };
+
   // 1. Calculate Monthly Data (until Dec 2026)
   const monthlyData = useMemo(() => {
     const months = [
@@ -54,7 +63,7 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
       if (date.getFullYear() === 2026) {
         const monthName = months[date.getMonth()];
         if (dataMap[monthName] !== undefined) {
-          dataMap[monthName] += neg.value;
+          dataMap[monthName] += getValue(neg);
         }
       }
     });
@@ -63,29 +72,29 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
       name,
       total,
     }));
-  }, [negotiations]);
+  }, [negotiations, valueMode]);
 
   // 2. Aggregate by Client
   const clientBreakdown = useMemo(() => {
     const map: Record<string, number> = {};
     negotiations.forEach(n => {
-      map[n.client] = (map[n.client] || 0) + n.value;
+      map[n.client] = (map[n.client] || 0) + getValue(n);
     });
     return Object.entries(map)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5); // Top 5
-  }, [negotiations]);
+  }, [negotiations, valueMode]);
 
   // 3. Aggregate by Product
   const productBreakdown = useMemo(() => {
     const map: Record<string, number> = {};
     negotiations.forEach(n => {
-      map[n.product] = (map[n.product] || 0) + n.value;
+      map[n.product] = (map[n.product] || 0) + getValue(n);
     });
     return Object.entries(map)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5); // Top 5
-  }, [negotiations]);
+  }, [negotiations, valueMode]);
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -97,11 +106,12 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
 
   return (
     <div className="space-y-8 mb-12 select-none">
-      {/* Team Selection Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/5 border border-glass-border p-4 rounded-2xl">
-        <div>
-          <p className="text-[0.6rem] font-bold tracking-[0.2em] text-accent uppercase mb-1">Filtrar por Time</p>
-          <div className="flex gap-2">
+      {/* Selection Header */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Team Selection */}
+        <div className="bg-white/5 border border-glass-border p-4 rounded-2xl">
+          <p className="text-[0.6rem] font-bold tracking-[0.2em] text-accent uppercase mb-3">Filtrar por Time</p>
+          <div className="flex flex-wrap gap-2">
             {['all', 'Vendas', 'Novos Negócios'].map((t) => (
               <button
                 key={t}
@@ -118,31 +128,37 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
           </div>
         </div>
 
-        <div>
-          <p className="text-[0.6rem] font-bold tracking-[0.2em] text-emerald-400 uppercase mb-1">Filtrar por Visão Financeira</p>
+        {/* Value Mode Selection */}
+        <div className="bg-white/5 border border-glass-border p-4 rounded-2xl">
+          <p className="text-[0.6rem] font-bold tracking-[0.2em] text-blue-400 uppercase mb-3">Visão de Valor</p>
           <div className="flex gap-2">
-            {['all', 'Recorrente/MRR', 'Setup/Único'].map((r) => (
+            {[
+              { id: 'mrr', label: 'Recorrente / MRR' },
+              { id: 'setup', label: 'Setup / Único' },
+              { id: 'total', label: 'Total Acumulado' }
+            ].map((m) => (
               <button
-                key={r}
-                onClick={() => onRevenueTypeClick(r)}
-                className={`px-4 py-2 rounded-xl text-[0.65rem] font-black uppercase tracking-widest transition-all border ${
-                  selectedRevenueType === r 
-                    ? 'bg-emerald-600/30 border-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' 
+                key={m.id}
+                onClick={() => onValueModeChange(m.id as any)}
+                className={`flex-1 px-3 py-2 rounded-xl text-[0.6rem] font-black uppercase tracking-widest transition-all border ${
+                  valueMode === m.id 
+                    ? 'bg-blue-400/20 border-blue-400 text-white shadow-[0_0_15px_rgba(96,165,250,0.2)]' 
                     : 'bg-white/5 border-glass-border text-text-secondary hover:bg-white/10 hover:text-white'
                 }`}
               >
-                {r === 'all' ? 'Todas as Visões' : r}
+                {m.label}
               </button>
             ))}
           </div>
         </div>
+      </div>
 
-        <div className="flex items-center gap-3 pr-2">
-          <div className="h-8 w-px bg-glass-border opacity-20 hidden sm:block" />
-          <p className="text-[0.6rem] font-bold tracking-widest text-text-secondary uppercase">
-            {negotiations.length} {negotiations.length === 1 ? 'Oportunidade' : 'Oportunidades'}
-          </p>
-        </div>
+      <div className="flex items-center gap-3 pr-2 opacity-50">
+        <div className="h-px bg-glass-border flex-1" />
+        <p className="text-[0.6rem] font-bold tracking-widest text-text-secondary uppercase">
+          {negotiations.length} {negotiations.length === 1 ? 'Oportunidade' : 'Oportunidades'}
+        </p>
+        <div className="h-px bg-glass-border flex-1" />
       </div>
 
       {/* Summary Cards */}

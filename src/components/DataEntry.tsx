@@ -128,14 +128,6 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
               </th>
               <th 
                 className="px-8 py-5 font-bold text-[0.6rem] tracking-[0.2em] uppercase cursor-pointer group hover:text-white transition-colors"
-                onClick={() => requestSort('revenueType')}
-              >
-                <div className="flex items-center gap-2">
-                  TIPO DE RECEITA <SortIcon columnKey="revenueType" />
-                </div>
-              </th>
-              <th 
-                className="px-8 py-5 font-bold text-[0.6rem] tracking-[0.2em] uppercase cursor-pointer group hover:text-white transition-colors"
                 onClick={() => requestSort('area-product')}
               >
                 <div className="flex items-center gap-2">
@@ -154,8 +146,16 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
                 className="px-8 py-5 font-bold text-[0.6rem] tracking-[0.2em] uppercase text-right cursor-pointer group hover:text-white transition-colors"
                 onClick={() => requestSort('value')}
               >
-                <div className="flex items-center justify-end gap-2">
-                  VALOR <SortIcon columnKey="value" />
+                <div className="flex items-center justify-end gap-2 text-accent">
+                  RECORRENTE/MRR <SortIcon columnKey="value" />
+                </div>
+              </th>
+              <th 
+                className="px-8 py-5 font-bold text-[0.6rem] tracking-[0.2em] uppercase text-right cursor-pointer group hover:text-white transition-colors"
+                onClick={() => requestSort('setupValue')}
+              >
+                <div className="flex items-center justify-end gap-2 text-blue-400">
+                  SETUP/ÚNICO <SortIcon columnKey="setupValue" />
                 </div>
               </th>
               <th className="px-8 py-5 font-bold text-[0.6rem] tracking-[0.2em] uppercase text-center">AÇÕES</th>
@@ -175,15 +175,6 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
                   }`}
                 >
                   <td className="px-8 py-5 text-white font-bold">{neg.client}</td>
-                  <td className="px-8 py-5">
-                    <span className={`px-2 py-1 text-[0.55rem] font-bold uppercase rounded-lg ${
-                      (neg.revenueType || 'Recorrente/MRR') === 'Recorrente/MRR'
-                        ? 'bg-emerald-500/10 text-emerald-400'
-                        : 'bg-orange-500/10 text-orange-400'
-                    }`}>
-                      {neg.revenueType || 'Recorrente/MRR'}
-                    </span>
-                  </td>
                   <td className="px-8 py-5">
                     <div className="flex items-center gap-2">
                       <div className="text-white font-medium">{neg.product}</div>
@@ -205,8 +196,11 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
                   <td className="px-8 py-5 text-text-secondary">
                     {new Date(neg.closeDate + 'T12:00:00').toLocaleDateString('pt-BR')}
                   </td>
-                  <td className="px-8 py-5 text-right font-bold text-[#4ade80]">
+                  <td className="px-8 py-5 text-right font-bold text-white">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(neg.value)}
+                  </td>
+                  <td className="px-8 py-5 text-right font-bold text-white">
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(neg.setupValue || 0)}
                   </td>
                   <td className="px-8 py-5">
                     <div className="flex justify-center gap-4">
