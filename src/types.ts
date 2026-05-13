@@ -8,6 +8,7 @@ export interface Negotiation {
   observations: string;
   status: 'em andamento' | 'fechado';
   team: 'Vendas' | 'Novos Negócios';
+  revenueType: 'Recorrente/MRR' | 'Setup/Único';
   userId: string;
   createdAt: any;
 }

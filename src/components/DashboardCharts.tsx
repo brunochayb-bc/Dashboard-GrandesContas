@@ -17,6 +17,8 @@ interface DashboardChartsProps {
   negotiations: Negotiation[];
   selectedTeam: string;
   onTeamClick: (team: string) => void;
+  selectedRevenueType: string;
+  onRevenueTypeClick: (type: string) => void;
   onClientClick?: (client: string) => void;
   onProductClick?: (product: string) => void;
   onMonthClick?: (month: string) => void;
@@ -26,6 +28,8 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
   negotiations, 
   selectedTeam,
   onTeamClick,
+  selectedRevenueType,
+  onRevenueTypeClick,
   onClientClick, 
   onProductClick,
   onMonthClick
@@ -113,6 +117,26 @@ export const DashboardCharts: React.FC<DashboardChartsProps> = ({
             ))}
           </div>
         </div>
+
+        <div>
+          <p className="text-[0.6rem] font-bold tracking-[0.2em] text-emerald-400 uppercase mb-1">Filtrar por Visão Financeira</p>
+          <div className="flex gap-2">
+            {['all', 'Recorrente/MRR', 'Setup/Único'].map((r) => (
+              <button
+                key={r}
+                onClick={() => onRevenueTypeClick(r)}
+                className={`px-4 py-2 rounded-xl text-[0.65rem] font-black uppercase tracking-widest transition-all border ${
+                  selectedRevenueType === r 
+                    ? 'bg-emerald-600/30 border-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]' 
+                    : 'bg-white/5 border-glass-border text-text-secondary hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {r === 'all' ? 'Todas as Visões' : r}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="flex items-center gap-3 pr-2">
           <div className="h-8 w-px bg-glass-border opacity-20 hidden sm:block" />
           <p className="text-[0.6rem] font-bold tracking-widest text-text-secondary uppercase">

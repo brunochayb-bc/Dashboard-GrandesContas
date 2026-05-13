@@ -40,6 +40,7 @@ export default function App() {
   const [selectedProductFilter, setSelectedProductFilter] = useState('all');
   const [selectedMonth, setSelectedMonth] = useState('all');
   const [selectedTeam, setSelectedTeam] = useState('all');
+  const [selectedRevenueType, setSelectedRevenueType] = useState('all');
   const [isChartsOpen, setIsChartsOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedNegForEdit, setSelectedNegForEdit] = useState<Negotiation | null>(null);
@@ -129,6 +130,10 @@ export default function App() {
       result = result.filter(n => (n.team || 'Vendas') === selectedTeam);
     }
 
+    if (selectedRevenueType !== 'all') {
+      result = result.filter(n => (n.revenueType || 'Recorrente/MRR') === selectedRevenueType);
+    }
+
     if (activeFilter.startsWith('area-')) {
       const areaVal = activeFilter.split('area-')[1];
       if (areaVal !== 'all') {
@@ -142,7 +147,7 @@ export default function App() {
     }
 
     return result;
-  }, [negotiations, activeFilter, searchQuery, selectedClient, selectedProductFilter, selectedTeam]);
+  }, [negotiations, activeFilter, searchQuery, selectedClient, selectedProductFilter, selectedTeam, selectedRevenueType]);
 
   const filteredNegotiations = useMemo(() => {
     let result = [...negotiationsForCharts];
@@ -262,6 +267,8 @@ export default function App() {
         setSelectedClient={setSelectedClient}
         selectedTeam={selectedTeam}
         setSelectedTeam={setSelectedTeam}
+        selectedRevenueType={selectedRevenueType}
+        setSelectedRevenueType={setSelectedRevenueType}
         setSelectedMonth={setSelectedMonth}
         areas={areas}
         products={products}
@@ -430,7 +437,10 @@ export default function App() {
                          ? selectedMonth 
                          : (selectedTeam !== 'all' 
                              ? `TIME: ${selectedTeam}` 
-                             : (activeFilter === 'area-all' || activeFilter === 'product-all' ? 'VISÃO INTEGRAL' : activeFilter.split('-')[1])
+                             : (selectedRevenueType !== 'all'
+                                 ? `FINANCEIRO: ${selectedRevenueType}`
+                                 : (activeFilter === 'area-all' || activeFilter === 'product-all' ? 'VISÃO INTEGRAL' : activeFilter.split('-')[1])
+                               )
                            )
                        }
                      </p>
@@ -449,6 +459,8 @@ export default function App() {
                         negotiations={negotiationsForCharts} 
                         selectedTeam={selectedTeam}
                         onTeamClick={setSelectedTeam}
+                        selectedRevenueType={selectedRevenueType}
+                        onRevenueTypeClick={setSelectedRevenueType}
                         onClientClick={(c) => {
                           setSelectedClient(c);
                           setSelectedMonth('all');

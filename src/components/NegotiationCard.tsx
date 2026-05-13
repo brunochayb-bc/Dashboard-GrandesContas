@@ -103,6 +103,13 @@ export const NegotiationCard: React.FC<NegotiationCardProps> = ({ negotiation, i
           <div className="flex flex-col items-end">
             <span className="text-[0.55rem] text-text-secondary uppercase leading-tight">Valor</span>
             <span className="text-xs font-bold text-[#4ade80]">{formattedValue}</span>
+            <span className={`text-[0.5rem] font-bold uppercase mt-1 px-1 rounded-sm ${
+              (negotiation.revenueType || 'Recorrente/MRR') === 'Recorrente/MRR'
+                ? 'bg-emerald-500/10 text-emerald-400'
+                : 'bg-orange-500/10 text-orange-400'
+            }`}>
+              {negotiation.revenueType || 'Recorrente/MRR'}
+            </span>
           </div>
         </div>
       </div>

@@ -128,6 +128,14 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
               </th>
               <th 
                 className="px-8 py-5 font-bold text-[0.6rem] tracking-[0.2em] uppercase cursor-pointer group hover:text-white transition-colors"
+                onClick={() => requestSort('revenueType')}
+              >
+                <div className="flex items-center gap-2">
+                  TIPO DE RECEITA <SortIcon columnKey="revenueType" />
+                </div>
+              </th>
+              <th 
+                className="px-8 py-5 font-bold text-[0.6rem] tracking-[0.2em] uppercase cursor-pointer group hover:text-white transition-colors"
                 onClick={() => requestSort('area-product')}
               >
                 <div className="flex items-center gap-2">
@@ -156,7 +164,7 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
           <tbody className="divide-y divide-glass-border">
             {sortedNegotiations.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-8 py-24 text-center text-text-secondary opacity-50 uppercase tracking-[0.3em] text-xs">Sem registros para exibição</td>
+                <td colSpan={6} className="px-8 py-24 text-center text-text-secondary opacity-50 uppercase tracking-[0.3em] text-xs">Sem registros para exibição</td>
               </tr>
             ) : (
               sortedNegotiations.map((neg) => (
@@ -167,6 +175,15 @@ export function DataEntry({ negotiations, onBack, exposedEditRef }: DataEntryPro
                   }`}
                 >
                   <td className="px-8 py-5 text-white font-bold">{neg.client}</td>
+                  <td className="px-8 py-5">
+                    <span className={`px-2 py-1 text-[0.55rem] font-bold uppercase rounded-lg ${
+                      (neg.revenueType || 'Recorrente/MRR') === 'Recorrente/MRR'
+                        ? 'bg-emerald-500/10 text-emerald-400'
+                        : 'bg-orange-500/10 text-orange-400'
+                    }`}>
+                      {neg.revenueType || 'Recorrente/MRR'}
+                    </span>
+                  </td>
                   <td className="px-8 py-5">
                     <div className="flex items-center gap-2">
                       <div className="text-white font-medium">{neg.product}</div>

@@ -24,6 +24,7 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
     observations: '',
     status: 'em andamento' as 'em andamento' | 'fechado',
     team: 'Vendas' as 'Vendas' | 'Novos Negócios',
+    revenueType: 'Recorrente/MRR' as 'Recorrente/MRR' | 'Setup/Único',
   });
 
   const formatBRL = (val: number) => {
@@ -44,6 +45,7 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
         observations: negotiation.observations || '',
         status: negotiation.status || 'em andamento',
         team: negotiation.team || 'Vendas',
+        revenueType: negotiation.revenueType || 'Recorrente/MRR',
       });
       setDisplayValue(formatBRL(negotiation.value));
     } else {
@@ -56,6 +58,7 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
         observations: '',
         status: 'em andamento',
         team: 'Vendas',
+        revenueType: 'Recorrente/MRR',
       });
       setDisplayValue('');
     }
@@ -224,6 +227,25 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
                         placeholder="0,00"
                       />
                     </div>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Tipo de Receita</label>
+                  <div className="flex gap-4">
+                    {['Recorrente/MRR', 'Setup/Único'].map((r) => (
+                      <button
+                        key={r}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, revenueType: r as any })}
+                        className={`flex-1 py-3 rounded-xl text-[0.65rem] font-black uppercase tracking-widest transition-all border ${
+                          formData.revenueType === r 
+                            ? 'bg-emerald-500/20 border-emerald-500 text-white' 
+                            : 'bg-white/5 border-glass-border text-text-secondary hover:bg-white/10'
+                        }`}
+                      >
+                        {r}
+                      </button>
+                    ))}
                   </div>
                 </div>
                 <div>

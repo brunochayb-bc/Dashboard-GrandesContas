@@ -14,6 +14,7 @@
         "observations": { "type": "string", "description": "Additional notes about the negotiation." },
         "status": { "type": "string", "enum": ["em andamento", "fechado"], "description": "Current state of the negotiation." },
         "team": { "type": "string", "enum": ["Vendas", "Novos Negócios"], "description": "The team responsible for the negotiation." },
+        "revenueType": { "type": "string", "enum": ["Recorrente/MRR", "Setup/Único"], "description": "The type of revenue (Recurring or One-time)." },
         "userId": { "type": "string", "description": "ID of the user who owns this record." },
         "createdAt": { "type": "string", "format": "date-time" }
       },
