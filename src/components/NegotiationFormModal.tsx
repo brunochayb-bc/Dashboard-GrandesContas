@@ -11,10 +11,21 @@ interface NegotiationFormModalProps {
   negotiation: Negotiation | null;
 }
 
+const convertToDDMMYYYY = (isoDate: string) => {
+  if (!isoDate) return '';
+  const parts = isoDate.split('-');
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  return isoDate;
+};
+
 export function NegotiationFormModal({ isOpen, onClose, negotiation }: NegotiationFormModalProps) {
   const [loading, setLoading] = useState(false);
   const [displayValue, setDisplayValue] = useState('');
   const [displaySetupValue, setDisplaySetupValue] = useState('');
+  const [displayCloseDate, setDisplayCloseDate] = useState('');
+  const [dateError, setDateError] = useState('');
   
   const [formData, setFormData] = useState({
     client: '',
@@ -50,6 +61,8 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
       });
       setDisplayValue(formatBRL(negotiation.value));
       setDisplaySetupValue(formatBRL(negotiation.setupValue || 0));
+      setDisplayCloseDate(convertToDDMMYYYY(negotiation.closeDate));
+      setDateError('');
     } else {
       setFormData({
         client: '',
@@ -64,11 +77,63 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
       });
       setDisplayValue('');
       setDisplaySetupValue('');
+      setDisplayCloseDate('');
+      setDateError('');
     }
   }, [negotiation, isOpen]);
 
+  const handleDateChange = (val: string) => {
+    const clean = val.replace(/\D/g, '');
+    const clipped = clean.slice(0, 8);
+    
+    let formatted = '';
+    if (clipped.length > 0) {
+      formatted += clipped.slice(0, 2);
+    }
+    if (clipped.length > 2) {
+      formatted += '/' + clipped.slice(2, 4);
+    }
+    if (clipped.length > 4) {
+      formatted += '/' + clipped.slice(4, 8);
+    }
+    
+    setDisplayCloseDate(formatted);
+    setDateError('');
+    
+    if (clipped.length === 8) {
+      const d = parseInt(clipped.slice(0, 2), 10);
+      const m = parseInt(clipped.slice(2, 4), 10);
+      const y = parseInt(clipped.slice(4, 8), 10);
+      
+      if (d < 1 || d > 31 || m < 1 || m > 12 || y < 1900 || y > 2100) {
+        setDateError('Data inválida.');
+        setFormData(prev => ({ ...prev, closeDate: '' }));
+        return;
+      }
+      
+      const testDate = new Date(y, m - 1, d);
+      if (testDate.getFullYear() !== y || testDate.getMonth() !== (m - 1) || testDate.getDate() !== d) {
+        setDateError('Data inexistente.');
+        setFormData(prev => ({ ...prev, closeDate: '' }));
+        return;
+      }
+      
+      const mmFormatted = m.toString().padStart(2, '0');
+      const ddFormatted = d.toString().padStart(2, '0');
+      setFormData(prev => ({ ...prev, closeDate: `${y}-${mmFormatted}-${ddFormatted}` }));
+    } else {
+      setFormData(prev => ({ ...prev, closeDate: '' }));
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.closeDate) {
+      setDateError('Por favor, informe uma data válida no formato DD/MM/YYYY.');
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -200,15 +265,20 @@ export function NegotiationFormModal({ isOpen, onClose, negotiation }: Negotiati
 
               <div className="space-y-6 text-left">
                 <div>
-                  <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Previsão de Fechamento</label>
+                  <label className="block text-[0.6rem] font-bold tracking-widest uppercase text-text-secondary mb-2">Previsão de Fechamento (DD/MM/YYYY)</label>
                   <input
                     required
                     tabIndex={4}
-                    type="date"
-                    value={formData.closeDate}
-                    onChange={(e) => setFormData({ ...formData, closeDate: e.target.value })}
-                    className="w-full bg-white/5 border border-glass-border rounded-xl py-3 px-4 focus:outline-none focus:border-accent text-sm text-white transition-all appearance-none uppercase"
+                    type="text"
+                    pattern="\d{2}/\d{2}/\d{4}"
+                    placeholder="DD/MM/YYYY"
+                    value={displayCloseDate}
+                    onChange={(e) => handleDateChange(e.target.value)}
+                    className="w-full bg-white/5 border border-glass-border rounded-xl py-3 px-4 focus:outline-none focus:border-accent text-sm text-white transition-all font-mono"
                   />
+                  {dateError && (
+                    <p className="text-red-500 text-[10px] font-bold uppercase tracking-wider mt-1 ml-1">{dateError}</p>
+                  )}
                 </div>
                 
                 <div>
