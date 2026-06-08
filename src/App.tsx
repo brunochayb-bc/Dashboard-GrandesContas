@@ -159,6 +159,19 @@ export default function App() {
       });
     }
 
+    // Sort by closeDate ascending. If same closeDate, those with status === 'fechado' come first.
+    result.sort((a, b) => {
+      const dateA = a.closeDate || '';
+      const dateB = b.closeDate || '';
+      if (dateA !== dateB) {
+        return dateA.localeCompare(dateB);
+      }
+      
+      const isFechadoA = a.status === 'fechado' ? 1 : 0;
+      const isFechadoB = b.status === 'fechado' ? 1 : 0;
+      return isFechadoB - isFechadoA; // 'fechado' (1) gets sorted first (lower index)
+    });
+
     return result;
   }, [negotiationsForCharts, selectedMonth]);
 
